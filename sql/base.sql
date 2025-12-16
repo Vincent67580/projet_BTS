@@ -3,122 +3,105 @@ CREATE DATABASE ProjetBTS;
 
 USE ProjetBTS;
 
-CREATE TABLE roles(
-    idRoles INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(255) NOT NULL
+CREATE TABLE TypeSignalement(
+   idTypeSignalement INT AUTO_INCREMENT,
+   libelle VARCHAR(50),
+   PRIMARY KEY(idTypeSignalement)
 );
 
--- Table des utilisateurs (RH, juriste et admin)
-CREATE TABLE utilisateurs(
-    idUtilisateur INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(255) NOT NULL,
-    prenom VARCHAR(255) NOT NULL,
-    identifiant VARCHAR(255) NOT NULL UNIQUE,
-    motDePasse VARCHAR(255) NOT NULL,
-    idRoles INT,
-    FOREIGN KEY (idRoles) REFERENCES roles(idRoles)
+CREATE TABLE Roles(
+   idRoles INT AUTO_INCREMENT,
+   libelle VARCHAR(50),
+   PRIMARY KEY(idRoles)
 );
 
--- Tables des signalements
-CREATE TABLE signalements(
-    idSignalement INT AUTO_INCREMENT PRIMARY KEY,
-    typeSignalement VARCHAR(255) NOT NULL,
-    description TEXT,
-    status VARCHAR(255) NOT NULL DEFAULT'Nouveau',
-    dateDepot DATE DEFAULT CURRENT_DATE,
-    dateCloture DATE NULL,
-    estAnonyme BOOLEAN NOT NULL,
-
-    -- Données de lanceur d’alerte uniquement si non anonyme
-    nom VARCHAR(255) NULL,
-    prenom VARCHAR(255) NULL,
-
-    -- Identifiants d’accès pour le lanceur d’alerte :
-    numeroDossier VARCHAR(20) UNIQUE NOT NULL,
-    motDePasse VARCHAR(255) NOT NULL,
-
-    -- Référent RH/Juriste assigné
-    idUtilisateur INT DEFAULT NULL,
-    FOREIGN KEY (idUtilisateur) REFERENCES utilisateurs(idUtilisateur)
+CREATE TABLE PieceJointe(
+   idPJ INT AUTO_INCREMENT,
+   nomFichier VARCHAR(50),
+   contenuChiffre VARCHAR(50),
+   cheminFichier VARCHAR(255),
+   tailleOctet VARCHAR(50),
+   dateDepot DATETIME,
+   PRIMARY KEY(idPJ)
 );
 
---  Table qui permet la communication entre le RH et le lanceur d'alerte
-CREATE TABLE messages(
-    idMessage INT AUTO_INCREMENT PRIMARY KEY,
-    idSignalement INT NOT NULL,
-    idAuteur INT NULL, -- utilisateur en charge du dossier 
-    contenu TEXT NOT NULL,
-    dateEnvoi DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (idSignalement) REFERENCES signalements(idSignalement),
-    FOREIGN KEY (idAuteur) REFERENCES utilisateurs(idUtilisateur)
+CREATE TABLE Status(
+   idStatus INT AUTO_INCREMENT,
+   libelle VARCHAR(50),
+   PRIMARY KEY(idStatus)
 );
 
--- PJ qui sont avec le message et le signalement 
-CREATE TABLE pieces_jointes(
-    idPJ INT AUTO_INCREMENT PRIMARY KEY,
-    idMessage INT NULL,
-    idSignalement INT NULL,
-    nomFichier VARCHAR(255) NOT NULL,
-    cheminFichier VARCHAR(500) NOT NULL,
-    typeMime VARCHAR(100),
-    tailleOctets INT,
-    dateDepot DATETIME DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE Signalements(
+   idSignalement INT AUTO_INCREMENT,
+   contenu TEXT,
+   dateDepot DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   estAnonyme BOOLEAN NOT NULL,
+   nom VARCHAR(50),
+   prenom VARCHAR(50),
+   numeroDossier VARCHAR(16) NOT NULL,
+   motDePasse VARCHAR(255) NOT NULL,
+   idStatus INT NOT NULL,
+   idTypeSignalement INT NOT NULL,
+   PRIMARY KEY(idSignalement),
+   FOREIGN KEY(idStatus) REFERENCES Status(idStatus),
+   FOREIGN KEY(idTypeSignalement) REFERENCES TypeSignalement(idTypeSignalement)
+);
 
-    FOREIGN KEY (idMessage) REFERENCES messages(idMessage),
-    FOREIGN KEY (idSignalement) REFERENCES signalements(idSignalement)
+CREATE TABLE Utilisateurs(
+   idUtilisateur INT AUTO_INCREMENT,
+   nom VARCHAR(50),
+   prenom VARCHAR(50),
+   mail VARCHAR(255),
+   identifiant VARCHAR(50),
+   motDePasseHash VARCHAR(255),
+   idRoles INT NOT NULL,
+   PRIMARY KEY(idUtilisateur),
+   FOREIGN KEY(idRoles) REFERENCES Roles(idRoles)
+);
+
+CREATE TABLE Historique(
+   idHistorique INT AUTO_INCREMENT,
+   action VARCHAR(50),
+   detail TEXT,
+   dateAction DATETIME,
+   idUtilisateur INT NOT NULL,
+   idSignalement INT NOT NULL,
+   PRIMARY KEY(idHistorique),
+   FOREIGN KEY(idUtilisateur) REFERENCES Utilisateur(idUtilisateur),
+   FOREIGN KEY(idSignalement) REFERENCES Signalement(idSignalement)
+);
+
+CREATE TABLE AjouterCommentaire(
+   idSignalement INT,
+   idUtilisateur INT,
+   contenu TEXT,
+   dateCommentaire DATETIME,
+   PRIMARY KEY(idSignalement, idUtilisateur),
+   FOREIGN KEY(idSignalement) REFERENCES Signalement(idSignalement),
+   FOREIGN KEY(idUtilisateur) REFERENCES Utilisateur(idUtilisateur)
+);
+
+CREATE TABLE AjouterPJ(
+   idSignalement INT,
+   idPJ INT,
+   PRIMARY KEY(idSignalement, idPJ),
+   FOREIGN KEY(idSignalement) REFERENCES Signalement(idSignalement),
+   FOREIGN KEY(idPJ) REFERENCES PieceJointe(idPJ)
 );
 
 
-CREATE TABLE historique(
-    idHistorique INT AUTO_INCREMENT PRIMARY KEY,
-    idSignalement INT NOT NULL,
-    idUtilisateur INT NULL, 
-    action VARCHAR(255) NOT NULL,
-    details TEXT,
-    dateAction DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (idSignalement) REFERENCES signalements(idSignalement),
-    FOREIGN KEY (idUtilisateur) REFERENCES utilisateurs(idUtilisateur)
-);
+INSERT INTO roles(libelle) VALUES
+('admin'),
+('RH'),
+('Juriste');
 
+INSERT INTO TypeSignalement(libelle) VALUES
+('Harcèlement'),
+('Corruption'),
+('Fraude'),
+('Sécurité'),
+('Autre');
 
--- INSERT INTO roles(nom) VALUES
--- ('admin'),
--- ('RH'),
--- ('Juriste');
-
--- INSERT into utilisateurs(nom,prenom,login,motDePasse,idRoles) VALUES
--- ('bonnet','vincent','vbonnet','123456',1),
--- ('aaaaa','aa','vbonnet','azazazazazaz',2),
--- ('bbbbb','bb','vbonnet','bnbnbnbnbnbn',3),
--- ('ccccc','cc','vbonnet','cvcvcvcvcvcv',3),
--- ('ddddd','dd','vbonnet','dfdfdfdfdfdf',2),
--- ('eeeee','ee','vbonnet','erererererer',2);
-
--- INSERT INTO signalements(typeSignalement,description,status,dateCloture,estAnonyme,nom,prenom,numeroDossier,motDePasse) VALUES
--- -- 1. Signalement non anonyme
--- ('Harcèlement moral','Comportement irrespectueux répété d’un supérieur.','En cours',NULL,0,
---  'Martin','Julie',100001,'mdp123'),
-
--- -- 2. Signalement anonyme
--- ('Discrimination','Traitement inégal dû à l’origine perçue.','Nouveau',NULL,1,
---  NULL,NULL,100002,'azerty'),
-
--- -- 3. Corruption présumée
--- ('Corruption','Demande d’avantage en échange d’un service professionnel.','Résolu','2025-02-05 14:12:00',0,
---  'Durand','Paul',100003,'secret1'),
-
--- -- 4. Risque professionnel
--- ('Risque professionnel','Matériel défaillant dans l’atelier.','En cours',NULL,1,
---  NULL,NULL,100004,'xyz789'),
-
--- -- 5. Harcèlement sexuel (anonyme)
--- ('Harcèlement sexuel','Comportements déplacés et remarques inappropriées.','Nouveau',NULL,1,
---  NULL,NULL,100005,'pass999');
-
-
--- INSERT INTO signalements(typeSignalement,description,status,dateCloture,estAnonyme,nom,prenom,numeroDossier,motDePasse,idUtilisateur) VALUES
--- -- 6. Signalement non anonyme pris en charge par un utilisateurs
--- ('Harcèlement moral','Comportement irrespectueux répété d’un supérieur.','En cours',NULL,0,
---  'Martin','Julie',100006,'mdp123',1);
+INSERT INTO Status(libelle) VALUES
+('Nouveau'),('En cours'),('Traiter');

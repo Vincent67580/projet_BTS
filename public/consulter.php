@@ -1,33 +1,41 @@
 <!-- public/consulter.php -->
+
 <?php
+$pageCSS = 'consulter.css';
 include __DIR__ . '/../views/layout/header.php';
 require_once __DIR__ . '/../src/db.php';
 
 $pdo = get_pdo();
 
-// Si le formulaire a été soumis
+$erreur = null;
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $num = $_POST['numeroDossier'];
-    $mdp = $_POST['motDePasse'];
+    $num = $_POST['numeroDossier'] ?? '';
+    $mdp = $_POST['motDePasse'] ?? '';
 
-    // Récupération du signalement correspondant
-    $stmt = $pdo->prepare("SELECT * FROM signalements WHERE numeroDossier = ?");
+    $stmt = $pdo->prepare('
+        SELECT si.numeroDossier, ty.libelle AS libelleType, si.contenu,
+               st.libelle AS libelleStatus, si.dateDepot, si.estAnonyme,
+               si.nom, si.prenom, si.motDePasse
+        FROM Signalements si
+        JOIN Status st ON st.idStatus = si.idStatus
+        JOIN TypeSignalement ty ON ty.idTypeSignalement = si.idTypeSignalement
+        WHERE si.numeroDossier = ?
+    ');
     $stmt->execute([$num]);
     $signalement = $stmt->fetch();
 
     if ($signalement && password_verify($mdp, $signalement['motDePasse'])) {
-        // OK , on affiche
         include __DIR__ . '/../views/consulter_affichage.php';
     } else {
-        echo "<p style='color:red;'>Numéro de dossier ou mot de passe incorrect.</p>";
+        $erreur = "Numéro de dossier ou mot de passe incorrect.";
         include __DIR__ . '/../views/consulter_form.php';
     }
 
+
 } else {
-    // Première visite juste le formulaire
     include __DIR__ . '/../views/consulter_form.php';
 }
-?>
 
-<a href="index.php">Retour</a>
+include __DIR__.'/../views/layout/footer.php';
