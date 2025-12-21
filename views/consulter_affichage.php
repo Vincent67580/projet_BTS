@@ -1,98 +1,65 @@
 <!-- views/consulter_affichage.php -->
-
 <?php
-$pageCSS = 'consulter.css';
-// Récupération des PJ associées
+// Récupération des PJ
 $stmtPJ = $pdo->prepare("
     SELECT pj.nomFichier, pj.cheminFichier
     FROM PieceJointe pj
     JOIN AjouterPJ ap ON ap.idPJ = pj.idPJ
-    JOIN Signalements si ON si.idSignalement = ap.idSignalement
-    WHERE si.numeroDossier = ?
+    WHERE ap.idSignalement = ?
 ");
-$stmtPJ->execute([$signalement['numeroDossier']]);
+$stmtPJ->execute([$signalement['idSignalement'] ?? 0]); // Note : Assurez-vous d'avoir l'idSignalement dans votre SELECT
 $piecesJointes = $stmtPJ->fetchAll();
+
+// Couleur selon le statut (exemple)
+$statusColor = ($signalement['libelleStatus'] == 'Reçu') ? '#3b82f6' : '#10b981';
 ?>
 
-<style>
-.affichage-container {
-    width: 60%;
-    margin: 40px auto;
-    padding: 25px;
-    background: #f8f8f8;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #0002;
-}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+        <div>
+            <span style="text-transform: uppercase; font-size: 0.75rem; font-weight: 800; color: var(--text-muted);">Référence dossier</span>
+            <h2 style="margin: 0; color: var(--primary-color);">#<?= htmlspecialchars($signalement['numeroDossier']) ?></h2>
+        </div>
+        <div style="text-align: right;">
+            <span style="display: inline-block; padding: 0.25rem 0.75rem; background: <?= $statusColor ?>; color: white; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
+                <?= htmlspecialchars($signalement['libelleStatus']) ?>
+            </span>
+            <p style="margin: 5px 0 0 0; font-size: 0.8rem; color: var(--text-muted);">Déposé le <?= date('d/m/Y', strtotime($signalement['dateDepot'])) ?></p>
+        </div>
+    </div>
 
-.affichage-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+        <div class="info-block">
+            <h4 style="margin-bottom: 0.5rem; color: var(--text-muted);">Émetteur</h4>
+            <?php if ($signalement['estAnonyme'] == 0): ?>
+                <p style="font-weight: 600; margin: 0;"><?= htmlspecialchars($signalement['prenom'] . ' ' . $signalement['nom']) ?></p>
+            <?php else: ?>
+                <p style="font-style: italic; margin: 0; color: var(--text-muted);">Anonyme</p>
+            <?php endif; ?>
+        </div>
+        <div class="info-block">
+            <h4 style="margin-bottom: 0.5rem; color: var(--text-muted);">Type d'alerte</h4>
+            <p style="font-weight: 600; margin: 0;"><?= htmlspecialchars($signalement['libelleType']) ?></p>
+        </div>
+    </div>
 
-.affichage-container p {
-    font-size: 16px;
-    margin: 10px 0;
-}
-
-.affichage-container p strong {
-    display: inline-block;
-    width: 120px;
-}
-
-.pj-list {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.pj-list img {
-    max-width: 150px;
-    border-radius: 6px;
-    box-shadow: 0 0 5px #0003;
-}
-
-.btn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background: #007bff;
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
-}
-
-.btn:hover {
-    background: #0069d9;
-}
-
-</style>
-
-
-<div class="affichage-container">
-    <h2>Signalement n° <?= htmlspecialchars($signalement['numeroDossier']) ?></h2>
-
-    <?php if ($signalement['estAnonyme'] == 0): ?>
-        <p><strong>Nom :</strong> <?= htmlspecialchars($signalement['nom']) ?></p>
-        <p><strong>Prénom :</strong> <?= htmlspecialchars($signalement['prenom']) ?></p>
-    <?php else: ?>
-        <p><em>Ce signalement a été déposé anonymement.</em></p>
-    <?php endif; ?>
-
-    <p><strong>Type :</strong> <?= htmlspecialchars($signalement['libelleType']) ?></p>
-    <p><strong>Description :</strong> <br> <?= nl2br(htmlspecialchars($signalement['contenu'])) ?></p>
-    <p><strong>Status :</strong> <?= htmlspecialchars($signalement['libelleStatus']) ?></p>
-    <p><strong>Date dépôt :</strong> <?= htmlspecialchars($signalement['dateDepot']) ?></p>
+    <div style="background: #f9fafb; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+        <h4 style="margin-top: 0; margin-bottom: 1rem; color: var(--text-muted);">Description des faits</h4>
+        <p style="margin: 0; white-space: pre-wrap;"><?= nl2br(htmlspecialchars($signalement['contenu'])) ?></p>
+    </div>
 
     <?php if (!empty($piecesJointes)): ?>
-        <h3>Pièces jointes :</h3>
-        <ul class="pj-list">
+        <h4 style="color: var(--text-muted); margin-bottom: 1rem;">Pièces jointes</h4>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
             <?php foreach ($piecesJointes as $pj): ?>
-                <a href="../public/<?= htmlspecialchars($pj['cheminFichier']) ?>" target="_blank">
-                    <img src="../public/<?= htmlspecialchars($pj['cheminFichier']) ?>" alt="">
+                <a href="../public/<?= htmlspecialchars($pj['cheminFichier']) ?>" target="_blank" style="border: 1px solid var(--border-color); padding: 5px; border-radius: 8px; transition: transform 0.2s;">
+                    <img src="../public/<?= htmlspecialchars($pj['cheminFichier']) ?>" alt="PJ" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;">
                 </a>
             <?php endforeach; ?>
-        </ul>
+        </div>
     <?php endif; ?>
-    
-    <a class = "btn" href="index.php">Retour à l'accueil</a>
+
+    <div style="margin-top: 3rem; text-align: center;">
+        <a href="index.php" class="btn btn-secondary">Retour à l'accueil</a>
+    </div>
 </div>

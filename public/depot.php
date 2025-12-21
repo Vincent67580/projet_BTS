@@ -1,17 +1,43 @@
-<!-- public/depot.php -->
 <?php
 include __DIR__ . '/../views/layout/header.php';
 require_once __DIR__ . '/../src/db.php';
 
 $pdo = get_pdo();
 
+
+// Fonction pour formater un nom propre (ex: jean-pierre -> Jean-Pierre)
+
+function formatProperName($name) {
+    if (empty($name)) return null;
+    
+    // On convertit tout en minuscule pour commencer (UTF-8)
+    $name = mb_strtolower(trim($name), 'UTF-8');
+    
+    // Formater après les espaces
+    $parts = explode(' ', $name);
+    foreach ($parts as &$part) {
+        // Formater après les tirets
+        $subparts = explode('-', $part);
+        foreach ($subparts as &$subpart) {
+            $subpart = mb_ucfirst($subpart);
+        }
+        $part = implode('-', $subparts);
+    }
+    return implode(' ', $parts);
+}
+
+
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $type = $_POST['idTypeSignalement'];
     $contenu = $_POST['contenu'];
     $estAnonyme = isset($_POST['estAnonyme']) ? 1 : 0;
-    $nom = $estAnonyme ? null : $_POST['nom'];
-    $prenom = $estAnonyme ? null : $_POST['prenom'];
+    
+    // Application du formatage côté serveur pour garantir la propreté des données
+    $nom = $estAnonyme ? null : formatProperName($_POST['nom']);
+    $prenom = $estAnonyme ? null : formatProperName($_POST['prenom']);
+    
     $mdp = $_POST['mdp'];
     $hashMdp = password_hash($mdp, PASSWORD_DEFAULT);
 
@@ -64,7 +90,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 move_uploaded_file($tmpName, $dest);
 
-
                 // Enregistrer dans PieceJointe
                 $stmtPJ = $pdo->prepare("
                     INSERT INTO PieceJointe(nomFichier, cheminFichier, tailleOctet, dateDepot)
@@ -92,26 +117,38 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 ?>
 
 <style>
-.ajout{
-    color:green;
+.ajout {
+    color: green;
+    font-weight: bold;
 }
-
 .btn {
-    padding: 5px 12px;
+    display: inline-block;
+    padding: 10px 20px;
     background: #007bff;
     color: white;
     text-decoration: none;
     border-radius: 5px;
+    margin-top: 1rem;
+}
+.card-success {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: white;
+    text-align: center;
 }
 </style>
 
+<div class="card-success">
+    <p class="ajout">Alerte enregistrée avec succès !</p>
+    <p>Votre numéro de dossier : <strong><?=$numeroDossier?></strong></p>
+    <a class="btn" href="index.php">Retour à l'accueil</a>
+    <a class="btn" href="consulter.php">Suivre votre signalement</a>
+</div>
 
-<p class = "ajout" >Alerte enregistrée avec succès !</p>
-<p>Votre numéro de dossier : <strong><?=$numeroDossier?></strong></p>
-<a class = "btn" href="index.php">Retour à l'accueil</a>
-
-
-    <?php
+<?php
 } else {
     include __DIR__ . '/../views/depot_alerte.php';
 }
@@ -119,15 +156,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <?php include __DIR__.'/../views/layout/footer.php'; ?>
 
-
-
 <script>
-// Script qui signal que le fichier est trop volumineux ou pas autoriser
+// Validation des fichiers (taille et format)
 document.getElementById('formAlerte').addEventListener('submit', function(e) {
     let fichiers = document.getElementById('pj').files;
     let errorPJ = document.getElementById('errorPJ');
-    errorPJ.style.display = 'none';
-    errorPJ.textContent = '';
+    if(errorPJ) {
+        errorPJ.style.display = 'none';
+        errorPJ.textContent = '';
+    }
 
     const maxSize = 2 * 1024 * 1024; // 2 Mo
 
@@ -150,159 +187,126 @@ document.getElementById('formAlerte').addEventListener('submit', function(e) {
     }
 });
 
-
-
-// Script qui affiche et permet de supprimer les fichiers
+// Affichage et suppression dynamique des pièces jointes
 const inputPJ = document.getElementById('pj');
 const listePJ = document.getElementById('listePJ');
-
-// Objet qui va stocker les fichiers sélectionnés
 let fichiersSelectionnes = new DataTransfer();
 
-inputPJ.addEventListener('change', function () {
-    for (const file of this.files) {
-        // Sécurité : uniquement images
-        if (!file.type.startsWith('image/')) {
-            alert("Seules les images sont autorisées");
-            continue;
+if(inputPJ) {
+    inputPJ.addEventListener('change', function () {
+        for (const file of this.files) {
+            if (!file.type.startsWith('image/')) {
+                alert("Seules les images sont autorisées");
+                continue;
+            }
+            fichiersSelectionnes.items.add(file);
+            afficherPJ(file);
         }
-        fichiersSelectionnes.items.add(file);
-        afficherPJ(file);
-    }
-    // Mise à jour réelle de l'input file
-    inputPJ.files = fichiersSelectionnes.files;
-});
+        inputPJ.files = fichiersSelectionnes.files;
+    });
+}
 
-// Affichage dans la liste
 function afficherPJ(file) {
     const li = document.createElement('li');
     li.style.marginBottom = '5px';
-
     li.innerHTML = `
         ${file.name} (${Math.round(file.size / 1024)} Ko)
         <button type="button" style="margin-left:10px;">Supprimer</button>
     `;
-
     li.querySelector('button').addEventListener('click', function () {
         supprimerPJ(file, li);
     });
-
-    listePJ.appendChild(li);
+    if(listePJ) listePJ.appendChild(li);
 }
 
-// Suppression d’un fichier
 function supprimerPJ(file, liElement) {
     const nouveauDT = new DataTransfer();
-
     for (const f of fichiersSelectionnes.files) {
         if (f !== file) {
             nouveauDT.items.add(f);
         }
     }
-
     fichiersSelectionnes = nouveauDT;
     inputPJ.files = fichiersSelectionnes.files;
     liElement.remove();
 }
 
-
-// script infomrant les donnée a saisir manquante 
+// Validation du formulaire et des champs obligatoires
 const form = document.getElementById("formAlerte");
-const estAnonyme = document.querySelector("input[name='estAnonyme']");
-const nom = document.getElementById("nom");
-const prenom = document.getElementById("prenom");
-const typeSignalement = document.getElementById("idTypeSignalement");
-const description = document.getElementById("contenu");
-const mdp = document.getElementById("mdp");
+if(form) {
+    const estAnonyme = document.querySelector("input[name='estAnonyme']");
+    const nom = document.getElementById("nom");
+    const prenom = document.getElementById("prenom");
+    const typeSignalement = document.getElementById("idTypeSignalement");
+    const description = document.getElementById("contenu");
+    const mdp = document.getElementById("mdp");
 
-const errorNomPrenom = document.getElementById("errorNomPrenom");
-const errorType = document.getElementById("errorType");
-const errorDescription = document.getElementById("errorDescription");
-const errorMdp = document.getElementById("errorMdp");
+    const errorNomPrenom = document.getElementById("errorNomPrenom");
+    const errorType = document.getElementById("errorType");
+    const errorDescription = document.getElementById("errorDescription");
+    const errorMdp = document.getElementById("errorMdp");
 
-// Mot de passe (robustesse)
-const regexMaj = /[A-Z]/;
-const regexMin = /[a-z]/;
-const regexChiffre = /[0-9]/;
-const regexSpecial = /[\W_]/;
+    const regexMaj = /[A-Z]/;
+    const regexMin = /[a-z]/;
+    const regexChiffre = /[0-9]/;
+    const regexSpecial = /[\W_]/;
 
-form.addEventListener("submit", function(e) {
-    let valid = true;
+    form.addEventListener("submit", function(e) {
+        let valid = true;
 
-    // Type de signalement
-    if(typeSignalement.value === "") {
-        errorType.textContent = "Veuillez choisir un type de signalement.";
-        errorType.style.display = "block";
-        valid = false;
-    } else {
-        errorType.style.display = "none";
-    }
-
-    // Description
-    if(description.value.trim() === "") {
-        errorDescription.textContent = "Veuillez remplir la description.";
-        errorDescription.style.display = "block";
-        valid = false;
-    } else {
-        errorDescription.style.display = "none";
-    }
-
-    // Nom et prénom si non anonyme
-    if(!estAnonyme.checked) {
-        if(nom.value.trim() === "" || prenom.value.trim() === "") {
-            errorNomPrenom.textContent = "Veuillez remplir le nom et le prénom ou cocher 'Déposer anonymement'.";
-            errorNomPrenom.style.display = "block";
+        if(typeSignalement && typeSignalement.value === "") {
+            errorType.textContent = "Veuillez choisir un type de signalement.";
+            errorType.style.display = "block";
             valid = false;
-        } else {
-            errorNomPrenom.style.display = "none";
+        } else if(errorType) {
+            errorType.style.display = "none";
         }
-    } else {
-        errorNomPrenom.style.display = "none";
-    }
 
-    // Mot de passe
-    if (mdp.value.trim() === "") {
-        errorMdp.textContent = "Veuillez saisir un mot de passe pour consulter l'alerte.";
-        errorMdp.style.display = "block";
-        valid = false;
-    }
-    else if (mdp.value.length < 12) {
-        errorMdp.textContent = "Le mot de passe doit contenir au moins 12 caractères.";
-        errorMdp.style.display = "block";
-        valid = false;
-    }
-    else if (!regexMaj.test(mdp.value)) {
-        errorMdp.textContent = "Le mot de passe doit contenir au moins une majuscule.";
-        errorMdp.style.display = "block";
-        valid = false;
-    }
-    else if (!regexMin.test(mdp.value)) {
-        errorMdp.textContent = "Le mot de passe doit contenir au moins une minuscule.";
-        errorMdp.style.display = "block";
-        valid = false;
-    }
-    else if (!regexChiffre.test(mdp.value)) {
-        errorMdp.textContent = "Le mot de passe doit contenir au moins un chiffre.";
-        errorMdp.style.display = "block";
-        valid = false;
-    }
-    else if (!regexSpecial.test(mdp.value)) {
-        errorMdp.textContent = "Le mot de passe doit contenir au moins un caractère spécial.";
-        errorMdp.style.display = "block";
-        valid = false;
-    }
-    else {
-        errorMdp.style.display = "none";
-    }
+        if(description && description.value.trim() === "") {
+            errorDescription.textContent = "Veuillez remplir la description.";
+            errorDescription.style.display = "block";
+            valid = false;
+        } else if(errorDescription) {
+            errorDescription.style.display = "none";
+        }
 
-    if(!valid) {
-        e.preventDefault(); // empêche l'envoi si un champ est invalide
+        if(estAnonyme && !estAnonyme.checked) {
+            if(nom.value.trim() === "" || prenom.value.trim() === "") {
+                errorNomPrenom.textContent = "Veuillez remplir le nom et le prénom ou cocher 'Déposer anonymement'.";
+                errorNomPrenom.style.display = "block";
+                valid = false;
+            } else if(errorNomPrenom) {
+                errorNomPrenom.style.display = "none";
+            }
+        }
+
+        if(mdp) {
+            let mdpVal = mdp.value.trim();
+            let msg = "";
+            if (mdpVal === "") msg = "Veuillez saisir un mot de passe.";
+            else if (mdpVal.length < 12) msg = "Minimum 12 caractères.";
+            else if (!regexMaj.test(mdpVal)) msg = "Besoin d'une majuscule.";
+            else if (!regexMin.test(mdpVal)) msg = "Besoin d'une minuscule.";
+            else if (!regexChiffre.test(mdpVal)) msg = "Besoin d'un chiffre.";
+            else if (!regexSpecial.test(mdpVal)) msg = "Besoin d'un caractère spécial.";
+
+            if(msg !== "") {
+                errorMdp.textContent = msg;
+                errorMdp.style.display = "block";
+                valid = false;
+            } else {
+                errorMdp.style.display = "none";
+            }
+        }
+
+        if(!valid) e.preventDefault();
+    });
+
+    if(estAnonyme) {
+        estAnonyme.addEventListener("change", function() {
+            const infos = document.getElementById("infosPerso");
+            if(infos) infos.style.display = this.checked ? "none" : "block";
+        });
     }
-});
-
-
-// Si la case anonymat est cochée, cacher nom/prénom
-document.querySelector("input[name='estAnonyme']").addEventListener("change", function() {
-    document.getElementById("infosPerso").style.display = this.checked ? "none" : "block";
-});
+}
 </script>
