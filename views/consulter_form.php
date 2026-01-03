@@ -3,7 +3,6 @@
  * Vue du formulaire de consultation d'un signalement
  * Design harmonisé avec le formulaire de dépôt
  */
-$pageCSS = 'consulter'; 
 ?>
 
 <style>
@@ -194,7 +193,9 @@ $pageCSS = 'consulter';
             <button type="submit" class="btn-submit">Accéder au signalement</button>
         </form>
     </div>
+</div>
 
+<div>
     <a href="index.php" class="back-link">
         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>

@@ -10,12 +10,40 @@
         margin-right: 0;
     }
 
-    /* Optionnel : On peut aussi forcer le box-sizing globalement dans main.css si ce n'est pas déjà fait */
+    /* Style de la page */
+    .intro{
+        margin-bottom:3rem;
+    }
+    .intro-titre{
+        font-size: 2.5rem; 
+        margin-bottom: 1rem;
+    }
+    .intro-parag{
+        color: var(--text-muted); 
+        max-width: 600px; 
+        margin: 0 auto;
+    }
+
+    .carte{
+        display: flex; 
+        flex-direction: column; 
+        justify-content: space-between;
+    }
+    .carte-icon{
+        font-size: 3rem; 
+        margin-bottom: 1rem;
+    }
+    .carte-parag{
+        color: var(--text-muted); 
+        margin-bottom: 1.5rem;
+    }
+    
+
 </style>
 
-<div class="text-center" style="margin-bottom: 3rem;">
-    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Plateforme de signalement interne</h1>
-    <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">
+<div class="text-center intro" >
+    <h1 class="intro-titre">Plateforme de signalement interne</h1>
+    <p class="intro-parag" >
         Conformément à la loi Sapin II, cette plateforme sécurisée vous permet de signaler tout comportement 
         contraire au code d'éthique de l'entreprise en toute confidentialité.
     </p>
@@ -23,11 +51,11 @@
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
     <!-- Carte Déposer -->
-    <div class="card text-center" style="display: flex; flex-direction: column; justify-content: space-between;">
+    <div class="card text-center carte">
         <div>
-            <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+            <div class="carte-icon">📝</div>
             <h3>Déposer une alerte</h3>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+            <p class="carte-parag">
                 Signalez un incident ou un comportement suspect. Vous pouvez choisir de rester anonyme.
             </p>
         </div>
@@ -35,11 +63,11 @@
     </div>
 
     <!-- Carte Suivre -->
-    <div class="card text-center" style="display: flex; flex-direction: column; justify-content: space-between;">
+    <div class="card text-center carte">
         <div>
-            <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+            <div class="carte-icon">🔍</div>
             <h3>Suivre votre alerte</h3>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+            <p class="carte-parag">
                 Consultez l'état d'avancement de votre signalement à l'aide de vos identifiants.
             </p>
         </div>

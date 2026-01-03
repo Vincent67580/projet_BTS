@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $mdp = $_POST['motDePasse'] ?? '';
 
     $stmt = $pdo->prepare('
-        SELECT si.numeroDossier, ty.libelle AS libelleType, si.contenu,
+        SELECT si.idSignalement, si.numeroDossier, ty.libelle AS libelleType, si.contenu,
                st.libelle AS libelleStatus, si.dateDepot, si.estAnonyme,
                si.nom, si.prenom, si.motDePasse
         FROM Signalements si

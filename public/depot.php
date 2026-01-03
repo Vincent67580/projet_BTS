@@ -4,6 +4,13 @@ require_once __DIR__ . '/../src/db.php';
 
 $pdo = get_pdo();
 
+function mb_ucfirst(string $str, string $encoding = 'UTF-8'): string
+{
+    if ($str === '') return '';
+    return mb_strtoupper(mb_substr($str, 0, 1, $encoding), $encoding)
+         . mb_substr($str, 1, null, $encoding);
+}
+
 
 // Fonction pour formater un nom propre (ex: jean-pierre -> Jean-Pierre)
 

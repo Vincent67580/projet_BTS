@@ -64,6 +64,23 @@
         align-items: center; 
         border: 1px solid var(--border-color);
     }
+    
+    .back-link {
+        margin-top: 30px;
+        text-decoration: none;
+        color: #64748b;
+        font-size: 15px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: color 0.2s;
+    }
+
+    .back-link:hover {
+        color: #0f172a;
+        text-decoration: none;
+    }
 </style>
 
 <div class="card" style="max-width: 600px; margin: 0 auto;">
@@ -129,8 +146,13 @@
     </form>
 </div>
 
-<div class="text-center mt-4">
-    <a href="index.php" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">← Retour</a>
+<div>
+    <a href="index.php" class="back-link">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Retour à l'accueil
+    </a>
 </div>
 
 <script>

@@ -7,12 +7,31 @@ $stmtPJ = $pdo->prepare("
     JOIN AjouterPJ ap ON ap.idPJ = pj.idPJ
     WHERE ap.idSignalement = ?
 ");
-$stmtPJ->execute([$signalement['idSignalement'] ?? 0]); // Note : Assurez-vous d'avoir l'idSignalement dans votre SELECT
+$stmtPJ->execute([$signalement['idSignalement'] ?? 0]); 
 $piecesJointes = $stmtPJ->fetchAll();
 
-// Couleur selon le statut (exemple)
+// Couleur selon le statut a modifier
 $statusColor = ($signalement['libelleStatus'] == 'Reçu') ? '#3b82f6' : '#10b981';
 ?>
+
+<style>
+    .back-link {
+        margin-top: 30px;
+        text-decoration: none;
+        color: #64748b;
+        font-size: 15px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: color 0.2s;
+    }
+
+    .back-link:hover {
+        color: #0f172a;
+        text-decoration: none;
+    }
+</style>
 
 <div class="card" style="max-width: 800px; margin: 0 auto;">
     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
@@ -53,13 +72,19 @@ $statusColor = ($signalement['libelleStatus'] == 'Reçu') ? '#3b82f6' : '#10b981
         <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
             <?php foreach ($piecesJointes as $pj): ?>
                 <a href="../public/<?= htmlspecialchars($pj['cheminFichier']) ?>" target="_blank" style="border: 1px solid var(--border-color); padding: 5px; border-radius: 8px; transition: transform 0.2s;">
-                    <img src="../public/<?= htmlspecialchars($pj['cheminFichier']) ?>" alt="PJ" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;">
+                    <img src="../public/<?= htmlspecialchars($pj['cheminFichier']) ?>" alt="PJ" style="width: 90%; height: auto; object-fit: cover; border-radius: 4px;">
                 </a>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
 
-    <div style="margin-top: 3rem; text-align: center;">
-        <a href="index.php" class="btn btn-secondary">Retour à l'accueil</a>
-    </div>
+    
+</div>
+<div>
+    <a href="index.php" class="back-link">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Retour à l'accueil
+    </a>
 </div>
