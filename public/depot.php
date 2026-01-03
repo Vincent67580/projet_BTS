@@ -1,41 +1,23 @@
+<!-- public/depot.php -->
 <?php
 include __DIR__ . '/../views/layout/header.php';
 require_once __DIR__ . '/../src/db.php';
+require_once __DIR__ . '/../src/formatageNom.php';
+require_once __DIR__ . '/../src/verifMDP.php';
 
 $pdo = get_pdo();
 
-function mb_ucfirst(string $str, string $encoding = 'UTF-8'): string
-{
-    if ($str === '') return '';
-    return mb_strtoupper(mb_substr($str, 0, 1, $encoding), $encoding)
-         . mb_substr($str, 1, null, $encoding);
-}
-
-
-// Fonction pour formater un nom propre (ex: jean-pierre -> Jean-Pierre)
-
-function formatProperName($name) {
-    if (empty($name)) return null;
-    
-    // On convertit tout en minuscule pour commencer (UTF-8)
-    $name = mb_strtolower(trim($name), 'UTF-8');
-    
-    // Formater après les espaces
-    $parts = explode(' ', $name);
-    foreach ($parts as &$part) {
-        // Formater après les tirets
-        $subparts = explode('-', $part);
-        foreach ($subparts as &$subpart) {
-            $subpart = mb_ucfirst($subpart);
-        }
-        $part = implode('-', $subparts);
-    }
-    return implode(' ', $parts);
-}
-
-
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $formData = [
+        'idTypeSignalement' => $_POST['idTypeSignalement'] ?? '',
+        'contenu'          => $_POST['contenu'] ?? '',
+        'nom'              => $_POST['nom'] ?? '',
+        'prenom'           => $_POST['prenom'] ?? '',
+        'estAnonyme'       => isset($_POST['estAnonyme'])
+    ];
+
+    $erreurMdp = null;
 
     $type = $_POST['idTypeSignalement'];
     $contenu = $_POST['contenu'];
@@ -46,78 +28,91 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $prenom = $estAnonyme ? null : formatProperName($_POST['prenom']);
     
     $mdp = $_POST['mdp'];
-    $hashMdp = password_hash($mdp, PASSWORD_DEFAULT);
+    $resultatMdp = verifierMotDePasse($mdp);
 
-    // Génération du numéro de dossier : YYMMDD + 8 chiffres aléatoires
-    $numeroDossier = date('ymd') . str_pad(random_int(0, 99999999), 8, '0', STR_PAD_LEFT);
+    if (!$resultatMdp['valide']) {
+        $erreurMdp = $resultatMdp['messages']; // Tableau de toutes les erreurs
+    }
 
-    // Insertion du signalement
-    $stmt = $pdo->prepare("
-        INSERT INTO Signalements 
-        (contenu, estAnonyme, nom, prenom, numeroDossier, motDePasse, idStatus, idTypeSignalement)
-        VALUES 
-        (:contenu, :estAnonyme, :nom, :prenom, :numeroDossier, :motDePasse, 1, :typeSignalement)
-    ");
-    $stmt->execute([
-        ':contenu' => $contenu,
-        ':estAnonyme' => $estAnonyme,
-        ':nom' => $nom,
-        ':prenom' => $prenom,
-        ':numeroDossier' => $numeroDossier,
-        ':motDePasse' => $hashMdp,
-        ':typeSignalement' => $type
-    ]);
+    if ($erreurMdp !== null) {
+        include __DIR__ . '/../views/depot_alerte.php';
+        include __DIR__ . '/../views/layout/footer.php';
+        exit;
+    }
 
-    $idSignalement = $pdo->lastInsertId();
+    if (!isset($erreurMdp)) {
+        $hashMdp = password_hash($mdp, PASSWORD_DEFAULT);
+        // Génération du numéro de dossier : YYMMDD + 8 chiffres aléatoires
+        $numeroDossier = date('ymd') . str_pad(random_int(0, 99999999), 8, '0', STR_PAD_LEFT);
 
-    // Gestion des pièces jointes
-    if(!empty($_FILES['pj']['name'][0])) {
-        foreach($_FILES['pj']['name'] as $index => $name) {
-            $tmpName = $_FILES['pj']['tmp_name'][$index];
-            $size = $_FILES['pj']['size'][$index];
-            $error = $_FILES['pj']['error'][$index];
+        // Insertion du signalement
+        $stmt = $pdo->prepare("
+            INSERT INTO Signalements 
+            (contenu, estAnonyme, nom, prenom, numeroDossier, motDePasse, idStatus, idTypeSignalement)
+            VALUES 
+            (:contenu, :estAnonyme, :nom, :prenom, :numeroDossier, :motDePasse, 1, :typeSignalement)
+        ");
+        $stmt->execute([
+            ':contenu' => $contenu,
+            ':estAnonyme' => $estAnonyme,
+            ':nom' => $nom,
+            ':prenom' => $prenom,
+            ':numeroDossier' => $numeroDossier,
+            ':motDePasse' => $hashMdp,
+            ':typeSignalement' => $type
+        ]);
 
-            if($error === 0) {
-                $uploadDir = __DIR__.'/uploads/';
-                if(!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+        $idSignalement = $pdo->lastInsertId();
 
-                $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+        // Gestion des pièces jointes
+        if(!empty($_FILES['pj']['name'][0])) {
+            foreach($_FILES['pj']['name'] as $index => $name) {
+                $tmpName = $_FILES['pj']['tmp_name'][$index];
+                $size = $_FILES['pj']['size'][$index];
+                $error = $_FILES['pj']['error'][$index];
 
-                // Extensions autorisées (images uniquement)
-                $extensionsAutorisees = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
-                if (!in_array($extension, $extensionsAutorisees)) {
-                    continue;
+                if($error === 0) {
+                    $uploadDir = __DIR__.'/uploads/';
+                    if(!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+                    $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+
+                    // Extensions autorisées (images uniquement)
+                    $extensionsAutorisees = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
+                    if (!in_array($extension, $extensionsAutorisees)) {
+                        continue;
+                    }
+
+                    // Nom de fichier totalement anonymisé
+                    $nomAnonyme = bin2hex(random_bytes(16)) . '.' . $extension;
+
+                    $dest = $uploadDir . $nomAnonyme;
+                    $cheminRelatif = 'uploads/' . $nomAnonyme;
+
+                    move_uploaded_file($tmpName, $dest);
+
+                    // Enregistrer dans PieceJointe
+                    $stmtPJ = $pdo->prepare("
+                        INSERT INTO PieceJointe(nomFichier, cheminFichier, tailleOctet, dateDepot)
+                        VALUES (:nom, :chemin, :taille, NOW())
+                    ");
+                    $stmtPJ->execute([
+                        ':nom' => $nomAnonyme,
+                        ':chemin' => $cheminRelatif,
+                        ':taille' => $size
+                    ]);
+                    $idPJ = $pdo->lastInsertId();
+
+                    // Lier au signalement
+                    $stmtLink = $pdo->prepare("
+                        INSERT INTO AjouterPJ(idSignalement, idPJ)
+                        VALUES (:idSignalement, :idPJ)
+                    ");
+                    $stmtLink->execute([
+                        ':idSignalement' => $idSignalement,
+                        ':idPJ' => $idPJ
+                    ]);
                 }
-
-                // Nom de fichier totalement anonymisé
-                $nomAnonyme = bin2hex(random_bytes(16)) . '.' . $extension;
-
-                $dest = $uploadDir . $nomAnonyme;
-                $cheminRelatif = 'uploads/' . $nomAnonyme;
-
-                move_uploaded_file($tmpName, $dest);
-
-                // Enregistrer dans PieceJointe
-                $stmtPJ = $pdo->prepare("
-                    INSERT INTO PieceJointe(nomFichier, cheminFichier, tailleOctet, dateDepot)
-                    VALUES (:nom, :chemin, :taille, NOW())
-                ");
-                $stmtPJ->execute([
-                    ':nom' => $nomAnonyme,
-                    ':chemin' => $cheminRelatif,
-                    ':taille' => $size
-                ]);
-                $idPJ = $pdo->lastInsertId();
-
-                // Lier au signalement
-                $stmtLink = $pdo->prepare("
-                    INSERT INTO AjouterPJ(idSignalement, idPJ)
-                    VALUES (:idSignalement, :idPJ)
-                ");
-                $stmtLink->execute([
-                    ':idSignalement' => $idSignalement,
-                    ':idPJ' => $idPJ
-                ]);
             }
         }
     }
@@ -148,18 +143,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 </style>
 
+<?php if (isset($numeroDossier)) : ?>
 <div class="card-success">
     <p class="ajout">Alerte enregistrée avec succès !</p>
-    <p>Votre numéro de dossier : <strong><?=$numeroDossier?></strong></p>
+    <p>Votre numéro de dossier : <strong><?= htmlspecialchars($numeroDossier) ?></strong></p>
     <a class="btn" href="index.php">Retour à l'accueil</a>
     <a class="btn" href="consulter.php">Suivre votre signalement</a>
 </div>
+<?php endif; ?>
 
 <?php
 } else {
     include __DIR__ . '/../views/depot_alerte.php';
 }
 ?>
+
 
 <?php include __DIR__.'/../views/layout/footer.php'; ?>
 
@@ -289,16 +287,15 @@ if(form) {
 
         if(mdp) {
             let mdpVal = mdp.value.trim();
-            let msg = "";
-            if (mdpVal === "") msg = "Veuillez saisir un mot de passe.";
-            else if (mdpVal.length < 12) msg = "Minimum 12 caractères.";
-            else if (!regexMaj.test(mdpVal)) msg = "Besoin d'une majuscule.";
-            else if (!regexMin.test(mdpVal)) msg = "Besoin d'une minuscule.";
-            else if (!regexChiffre.test(mdpVal)) msg = "Besoin d'un chiffre.";
-            else if (!regexSpecial.test(mdpVal)) msg = "Besoin d'un caractère spécial.";
+            let msg = [];
+            if (mdpVal.length < 12) msg.push("Le mot de passe doit contenir au moins 12 caractères.");
+            if (!regexMaj.test(mdpVal)) msg.push("Le mot de passe doit contenir au moins une majuscule.");
+            if (!regexMin.test(mdpVal)) msg.push("Le mot de passe doit contenir au moins une minuscule.");
+            if (!regexChiffre.test(mdpVal)) msg.push("Le mot de passe doit contenir au moins un chiffre.");
+            if (!regexSpecial.test(mdpVal)) msg.push("Le mot de passe doit contenir au moins un caractère spécial.");
 
-            if(msg !== "") {
-                errorMdp.textContent = msg;
+            if(msg.length > 0){
+                errorMdp.innerHTML = msg.map(m => "<li>" + m + "</li>").join('');
                 errorMdp.style.display = "block";
                 valid = false;
             } else {

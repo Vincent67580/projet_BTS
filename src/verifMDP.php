@@ -12,25 +12,33 @@
 
 function verifierMotDePasse(string $mdp): array
 {
+    $erreurs = []; // Tableau pour accumuler les erreurs
+
     if (strlen($mdp) < 12) {
-        return ['valide' => false, 'message' => 'Le mot de passe doit contenir au moins 12 caractères.'];
+        $erreurs[] = 'Le mot de passe doit contenir au moins 12 caractères.';
     }
 
     if (!preg_match('/[A-Z]/', $mdp)) {
-        return ['valide' => false, 'message' => 'Le mot de passe doit contenir au moins une majuscule.'];
+        $erreurs[] = 'Le mot de passe doit contenir au moins une majuscule.';
     }
 
     if (!preg_match('/[a-z]/', $mdp)) {
-        return ['valide' => false, 'message' => 'Le mot de passe doit contenir au moins une minuscule.'];
+        $erreurs[] = 'Le mot de passe doit contenir au moins une minuscule.';
     }
 
     if (!preg_match('/[0-9]/', $mdp)) {
-        return ['valide' => false, 'message' => 'Le mot de passe doit contenir au moins un chiffre.'];
+        $erreurs[] = 'Le mot de passe doit contenir au moins un chiffre.';
     }
 
     if (!preg_match('/[\W_]/', $mdp)) {
-        return ['valide' => false, 'message' => 'Le mot de passe doit contenir au moins un caractère spécial.'];
+        $erreurs[] = 'Le mot de passe doit contenir au moins un caractère spécial.';
     }
 
-    return ['valide' => true, 'message' => 'Mot de passe valide'];
+    // Si aucune erreur => valide
+    if (empty($erreurs)) {
+        return ['valide' => true, 'messages' => []];
+    }
+
+    // Sinon on retourne toutes les erreurs
+    return ['valide' => false, 'messages' => $erreurs];
 }

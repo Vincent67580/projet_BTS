@@ -91,35 +91,36 @@
             <label for="idTypeSignalement">Nature de l'alerte</label>
             <select name="idTypeSignalement" id="idTypeSignalement" class="form-control">
                 <option value="">-- Sélectionner le type --</option>
-                <option value="1">Harcèlement</option>
-                <option value="2">Corruption</option>
-                <option value="3">Fraude</option>
-                <option value="4">Sécurité</option>
-                <option value="5">Autre</option>
+                <option value="1" <?= ($formData['idTypeSignalement'] ?? '') == 1 ? 'selected' : '' ?>>Harcèlement</option>
+                <option value="2" <?= ($formData['idTypeSignalement'] ?? '') == 2 ? 'selected' : '' ?>>Corruption</option>
+                <option value="3" <?= ($formData['idTypeSignalement'] ?? '') == 3 ? 'selected' : '' ?>>Fraude</option>
+                <option value="4" <?= ($formData['idTypeSignalement'] ?? '') == 4 ? 'selected' : '' ?>>Sécurité</option>
+                <option value="5" <?= ($formData['idTypeSignalement'] ?? '') == 5 ? 'selected' : '' ?>>Autre</option>
+
             </select>
             <p id="errorType" class="error-msg"></p>
         </div>
 
         <div class="form-group">
             <label for="contenu">Description détaillée des faits</label>
-            <textarea name="contenu" id="contenu" rows="6" class="form-control" placeholder="Décrivez les faits, les dates, les lieux et les personnes impliquées..."></textarea>
+            <textarea name="contenu" id="contenu" rows="6" class="form-control" placeholder="Décrivez les faits, les dates, les lieux et les personnes impliquées..."><?= htmlspecialchars($formData['contenu'] ?? '') ?></textarea>
             <p id="errorDescription" class="error-msg"></p>
         </div>
 
         <div class="checkbox-group">
-            <input type="checkbox" name="estAnonyme" id="estAnonyme" value="1" style="width: 20px; height: 20px;">
+            <input type="checkbox" name="estAnonyme" id="estAnonyme" value="1" <?= !empty($formData['estAnonyme']) ? 'checked' : '' ?> style="width: 20px; height: 20px;">
             <label for="estAnonyme" style="margin: 0; cursor: pointer;">Déposer ce signalement anonymement</label>
         </div>
 
-        <div id="infosPerso">
+        <div id="infosPerso" style="<?= !empty($formData['estAnonyme']) ? 'display:none;' : '' ?>">
             <div class="name-grid">
                 <div class="form-group">
                     <label for="nom">Nom</label>
-                    <input type="text" id="nom" name="nom" class="form-control js-proper-name">
+                    <input type="text" id="nom" name="nom" class="form-control js-proper-name" value=<?= htmlspecialchars($formData['nom'] ?? '') ?>>
                 </div>
                 <div class="form-group">
                     <label for="prenom">Prénom</label>
-                    <input type="text" id="prenom" name="prenom" class="form-control js-proper-name">
+                    <input type="text" id="prenom" name="prenom" class="form-control js-proper-name" value=<?= htmlspecialchars($formData['prenom'] ?? '') ?>>
                 </div>
             </div>
             <p id="errorNomPrenom" class="error-msg" style="margin-top: -0.5rem; margin-bottom: 1rem;"></p>
@@ -139,7 +140,15 @@
                 <button type="button" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 0.8rem;">Afficher</button>
             </div>
             <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Min. 12 caractères, majuscule, chiffre et caractère spécial.</p>
-            <p id="errorMdp" class="error-msg"></p>
+            <?php if (!empty($erreurMdp)) : ?>
+                <ul class="error-msg" id="errorMdp" style="display:block;">
+                    <?php foreach ($erreurMdp as $erreur) : ?>
+                        <li><?= htmlspecialchars($erreur) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else : ?>
+                <p id="errorMdp" class="error-msg"></p>
+            <?php endif; ?>
         </div>
 
         <button type="submit" class="btn" style="width: 100%; padding: 1rem; font-size: 1.1rem; margin-top: 1rem;">Envoyer le signalement</button>
