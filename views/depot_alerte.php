@@ -47,7 +47,7 @@
         gap: 1rem; /* Espace entre les deux colonnes */
     }
 
-    /* Empilage automatique sur mobile pour éviter le chevauchement */
+    
     @media (max-width: 480px) {
         .name-grid {
             grid-template-columns: 1fr;
@@ -87,6 +87,7 @@
     <h2 class="text-center">Nouveau signalement</h2>
     
     <form id="formAlerte" action="../public/depot.php" method="post" enctype="multipart/form-data">
+        <!-- Type de signalement -->
         <div class="form-group">
             <label for="idTypeSignalement">Nature de l'alerte</label>
             <select name="idTypeSignalement" id="idTypeSignalement" class="form-control">
@@ -96,22 +97,26 @@
                 <option value="3" <?= ($formData['idTypeSignalement'] ?? '') == 3 ? 'selected' : '' ?>>Fraude</option>
                 <option value="4" <?= ($formData['idTypeSignalement'] ?? '') == 4 ? 'selected' : '' ?>>Sécurité</option>
                 <option value="5" <?= ($formData['idTypeSignalement'] ?? '') == 5 ? 'selected' : '' ?>>Autre</option>
-
             </select>
+            <!-- Affichage erreur -->
             <p id="errorType" class="error-msg"></p>
         </div>
 
+        <!-- Description du signalement  -->
         <div class="form-group">
             <label for="contenu">Description détaillée des faits</label>
             <textarea name="contenu" id="contenu" rows="6" class="form-control" placeholder="Décrivez les faits, les dates, les lieux et les personnes impliquées..."><?= htmlspecialchars($formData['contenu'] ?? '') ?></textarea>
+            <!-- Affichage erreur -->
             <p id="errorDescription" class="error-msg"></p>
         </div>
 
+        <!-- Signalement anonyme ou non -->
         <div class="checkbox-group">
             <input type="checkbox" name="estAnonyme" id="estAnonyme" value="1" <?= !empty($formData['estAnonyme']) ? 'checked' : '' ?> style="width: 20px; height: 20px;">
             <label for="estAnonyme" style="margin: 0; cursor: pointer;">Déposer ce signalement anonymement</label>
         </div>
 
+        <!-- Nom et Prénom si non anonyme -->
         <div id="infosPerso" style="<?= !empty($formData['estAnonyme']) ? 'display:none;' : '' ?>">
             <div class="name-grid">
                 <div class="form-group">
@@ -123,16 +128,21 @@
                     <input type="text" id="prenom" name="prenom" class="form-control js-proper-name" value=<?= htmlspecialchars($formData['prenom'] ?? '') ?>>
                 </div>
             </div>
+            <!-- Affichage erreur -->
             <p id="errorNomPrenom" class="error-msg" style="margin-top: -0.5rem; margin-bottom: 1rem;"></p>
         </div>
 
+        <!-- Pièce jointe -->
         <div class="form-group">
             <label for="pj">Pièces jointes (Images uniquement, max 2Mo)</label>
             <input type="file" name="pj[]" id="pj" multiple accept="image/*" class="form-control" style="padding: 0.5rem;">
+            <!-- Affichage erreur -->
             <p id="errorPJ" class="error-msg"></p>
+            <!-- Affichage des PJ qui sont déposer pour le signalement -->
             <ul id="listePJ" style="margin-top: 1rem; padding: 0;"></ul>
         </div>
 
+        <!-- Mot de passe -->
         <div class="form-group">
             <label for="mdp">Mot de passe de consultation</label>
             <div class="password-wrapper" style="position: relative;">
@@ -140,6 +150,7 @@
                 <button type="button" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 0.8rem;">Afficher</button>
             </div>
             <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Min. 12 caractères, majuscule, chiffre et caractère spécial.</p>
+            <!-- Affichage des erreurs pour le mot de passe Javascript et PHP -->
             <?php if (!empty($erreurMdp)) : ?>
                 <ul class="error-msg" id="errorMdp" style="display:block;">
                     <?php foreach ($erreurMdp as $erreur) : ?>
