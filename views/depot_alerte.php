@@ -65,22 +65,6 @@
         border: 1px solid var(--border-color);
     }
     
-    .back-link {
-        margin-top: 30px;
-        text-decoration: none;
-        color: #64748b;
-        font-size: 15px;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        transition: color 0.2s;
-    }
-
-    .back-link:hover {
-        color: #0f172a;
-        text-decoration: none;
-    }
 </style>
 
 <div class="card" style="max-width: 600px; margin: 0 auto;">

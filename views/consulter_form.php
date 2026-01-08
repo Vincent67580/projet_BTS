@@ -12,10 +12,9 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 80vh;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background-color: #f8fafc; 
-        padding: 40px 20px;
+        padding: 25px 15px;
     }
 
     .form-container {
@@ -135,22 +134,6 @@
         gap: 8px;
     }
 
-    .back-link {
-        margin-top: 30px;
-        text-decoration: none;
-        color: #64748b;
-        font-size: 15px;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        transition: color 0.2s;
-    }
-
-    .back-link:hover {
-        color: #0f172a;
-        text-decoration: none;
-    }
 </style>
 
 <div class="page-wrapper">
