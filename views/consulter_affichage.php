@@ -88,3 +88,6 @@ $statusColor = ($signalement['libelleStatus'] == 'Reçu') ? '#3b82f6' : '#10b981
         Retour à l'accueil
     </a>
 </div>
+
+<a href="messagerie.php">Accéder à la messagerie</a> |<br>
+<a href="deconnexion.php">Quitter la consultation</a>

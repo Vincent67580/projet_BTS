@@ -90,6 +90,21 @@ CREATE TABLE AjouterPJ(
 );
 
 
+CREATE TABLE Messagerie(
+   idMessage INT AUTO_INCREMENT,
+   idSignalement INT NOT NULL,
+   idUtilisateur INT NULL,
+   origine ENUM('RH', 'SIGNALEUR') NOT NULL,
+
+   contenu TEXT NOT NULL,
+   dateMessage DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+   PRIMARY KEY (idMessage),
+   FOREIGN KEY(idSignalement) REFERENCES Signalements(idSignalement),
+   FOREIGN KEY(idUtilisateur) REFERENCES Utilisateurs(idUtilisateur)
+);
+
+
 
 INSERT INTO roles(libelle) VALUES
 ('admin'),
