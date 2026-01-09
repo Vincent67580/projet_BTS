@@ -1,6 +1,5 @@
 <!-- public/messagerie.php -->
 
-
 <?php
 session_start();
 $timeout = 300; // 5 minutes
