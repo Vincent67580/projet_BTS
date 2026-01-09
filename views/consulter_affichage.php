@@ -11,7 +11,13 @@ $stmtPJ->execute([$signalement['idSignalement'] ?? 0]);
 $piecesJointes = $stmtPJ->fetchAll();
 
 // Couleur selon le statut a modifier
-$statusColor = ($signalement['libelleStatus'] == 'Reçu') ? '#3b82f6' : '#10b981';
+$statusColors = [
+    'Nouveau'  => '#3b82f6', // bleu
+    'En cours' => '#10b981', // vert
+    'Traiter'  => '#ef4444', // rouge
+];
+
+$statusColor = $statusColors[$signalement['libelleStatus']] ?? '#6b7280'; // gris par défaut
 ?>
 
 <style>
@@ -74,5 +80,10 @@ $statusColor = ($signalement['libelleStatus'] == 'Reçu') ? '#3b82f6' : '#10b981
     </a>
 </div>
 
-<a href="messagerie.php" class="btn">Accéder à la messagerie</a>       
-<a href="deconnexion.php" class="btn" style="background-color:red">Quitter la consultation</a>
+<?php if($signalement['libelleStatus']==='Traiter'): ?>     
+    <a href="deconnexion.php" class="btn" style="background-color:red">Quitter la consultation</a>
+<?php else: ?>
+    <a href="messagerie.php" class="btn">Accéder à la messagerie</a>       
+    <a href="deconnexion.php" class="btn" style="background-color:red">Quitter la consultation</a>
+<?php endif; ?>
+

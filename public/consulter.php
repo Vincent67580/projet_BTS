@@ -13,7 +13,10 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 
     exit;
 }
 
-$_SESSION['last_activity'] = time();
+// Permet de réactualiser la duréer de la session sur on navigue de page en page 
+if (isset($_SESSION['idSignalement'])) {
+    $_SESSION['last_activity'] = time();
+}
 
 require_once __DIR__ . '/../src/db.php';
 include __DIR__ . '/../views/layout/header.php';
@@ -63,6 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($signalement && password_verify($mdp, $signalement['motDePasse'])) {
         $_SESSION['idSignalement'] = $signalement['idSignalement'];
+        $_SESSION['last_activity'] = time(); //ICI
 
         include __DIR__ . '/../views/consulter_affichage.php';
     } else {
