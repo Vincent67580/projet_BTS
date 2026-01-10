@@ -18,6 +18,9 @@ $statusColors = [
 ];
 
 $statusColor = $statusColors[$signalement['libelleStatus']] ?? '#6b7280'; // gris par défaut
+
+
+$_SESSION['libelleStatus'] = $signalement['libelleStatus'];
 ?>
 
 <style>
@@ -80,7 +83,10 @@ $statusColor = $statusColors[$signalement['libelleStatus']] ?? '#6b7280'; // gri
     </a>
 </div>
 
-<?php if($signalement['libelleStatus']==='Traiter'): ?>     
+
+<!-- accès a la messagerie seulement si le signalement n'est pas clos -->
+<?php if($signalement['libelleStatus']==='Traiter'): ?>    
+    <a href="messagerie.php" class="btn">Voir les messages</a>       
     <a href="deconnexion.php" class="btn" style="background-color:red">Quitter la consultation</a>
 <?php else: ?>
     <a href="messagerie.php" class="btn">Accéder à la messagerie</a>       

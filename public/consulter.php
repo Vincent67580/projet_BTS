@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($signalement && password_verify($mdp, $signalement['motDePasse'])) {
         $_SESSION['idSignalement'] = $signalement['idSignalement'];
-        $_SESSION['last_activity'] = time(); //ICI
+        $_SESSION['last_activity'] = time(); 
 
         include __DIR__ . '/../views/consulter_affichage.php';
     } else {

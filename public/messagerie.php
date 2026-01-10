@@ -59,5 +59,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-include __DIR__ . '/../views/consulter_depot_messagerie.php';
+if($_SESSION['libelleStatus']==='Traiter'):
+    include __DIR__ . '/../views/consulter_messagerie.php';
+else:
+    include __DIR__ . '/../views/consulter_depot_messagerie.php';
+endif;
+
 include __DIR__ . '/../views/layout/footer.php';
