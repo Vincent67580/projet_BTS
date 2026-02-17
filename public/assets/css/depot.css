@@ -1,0 +1,62 @@
+/* public/css/depot.css */
+
+/* depot.php */
+.ajout{
+    color:green;
+}
+
+.btn {
+    padding: 5px 12px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+
+/* depot_alerte.php */
+.form-container {
+    margin: auto;
+    padding: 20px;
+    width: 50%;
+    background: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #0002;
+}
+
+.form-container input:not(.check),.form-container select, .form-container textarea {
+    width: 90%;
+    padding: 8px;
+    margin: 10px auto;
+    display: block;
+}
+
+label input.check {
+    display: inline-block;
+    margin-right: 6px;
+}
+
+button {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.btn {
+    padding: 5px 12px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.error-message {
+    color: #c0392b;
+    font-size: 14px;
+    display: none;
+    margin-top: 5px;
+}
+
+#listePJ {
+    list-style: none;
+    padding-left: 0;
+}
