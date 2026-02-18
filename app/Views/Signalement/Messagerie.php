@@ -1,5 +1,6 @@
 <!-- Views/Consultations/consulter_depot_messagerie.php -->
 
+
 <style>
     .messages{
         border-radius: 16px; 

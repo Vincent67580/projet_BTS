@@ -60,9 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if($_SESSION['libelleStatus']==='Traiter'):
-    include __DIR__ . '/../Views/Consultations/consulter_messagerie.php';
+    include __DIR__ . '/../Views/Signalement/LogMessagerie.php';
 else:
-    include __DIR__ . '/../Views/Consultations/consulter_depot_messagerie.php';
+    include __DIR__ . '/../Views/Signalement/Messagerie.php';
 endif;
 
 include __DIR__ . '/../Views/layout/footer.php';

@@ -1,4 +1,4 @@
-<!-- public/consulter.php -->
+<!-- Models/consulter.php -->
 
 <?php
 session_start();
@@ -8,7 +8,7 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 
     session_unset();
     session_destroy();
     include __DIR__.'/../Views/layout/header.php';
-    echo 'Session expirée. <br><br> <a href="consulter.php" class="btn">Se reconnecter</a>';
+    echo 'Session expirée. <br><br> <a href="Models/consulter.php" class="btn">Se reconnecter</a>';
     include __DIR__.'/../Views/layout/footer.php';
     exit;
 }
@@ -40,7 +40,7 @@ if (isset($_SESSION['idSignalement'])) {
     $signalement = $stmt->fetch();
 
     if ($signalement) {
-        include __DIR__ . '/../Views/Consultations/consulter_affichage.php';
+        include __DIR__ . '/../Views/Signalement/signalement.php';
         include __DIR__.'/../Views/layout/footer.php';
         exit;
     }
@@ -68,15 +68,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_SESSION['idSignalement'] = $signalement['idSignalement'];
         $_SESSION['last_activity'] = time(); 
 
-        include __DIR__ . '/../Views/Consultations/consulter_affichage.php';
+        include __DIR__ . '/../Views/Signalement/Signalement.php';
     } else {
         $erreur = "Numéro de dossier ou mot de passe incorrect.";
-        include __DIR__ . '/../Views/Consultations/consulter_form.php';
+        include __DIR__ . '/../Views/Depot/connexions.php';
     }
 
 
 } else {
-    include __DIR__ . '/../Views/Consultations/consulter_form.php';
+    include __DIR__ . '/../Views/Depot/connexions.php';
 }
 
-include __DIR__.'/../Views/layout/footer.php';
+include __DIR__.'/../Views/layout/footer.php'

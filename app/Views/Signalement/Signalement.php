@@ -1,5 +1,11 @@
-<!-- Views/Consultations/consulter_affichage.php -->
+<!-- Views/Signalement/Signalement.php -->
+
 <?php
+
+/*
+* 
+* Affichage du signalement après connexion
+*/
 // Récupération des PJ
 $stmtPJ = $pdo->prepare("
     SELECT pj.nomFichier, pj.cheminFichier
@@ -19,13 +25,8 @@ $statusColors = [
 
 $statusColor = $statusColors[$signalement['libelleStatus']] ?? '#6b7280'; // gris par défaut
 
-
 $_SESSION['libelleStatus'] = $signalement['libelleStatus'];
 ?>
-
-<style>
-
-</style>
 
 <div class="card" style="max-width: 800px; margin: 0 auto;">
     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
@@ -65,8 +66,8 @@ $_SESSION['libelleStatus'] = $signalement['libelleStatus'];
         <h4 style="color: var(--text-muted); margin-bottom: 1rem;">Pièces jointes</h4>
         <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
             <?php foreach ($piecesJointes as $pj): ?>
-                <a href="../public/<?= htmlspecialchars($pj['cheminFichier']) ?>" target="_blank" style="border: 1px solid var(--border-color); padding: 5px; border-radius: 8px; transition: transform 0.2s;">
-                    <img src="../public/<?= htmlspecialchars($pj['cheminFichier']) ?>" alt="PJ" style="width: 90%; height: auto; object-fit: cover; border-radius: 4px;">
+                <a href="../Models/Uploads/<?= htmlspecialchars($pj['cheminFichier']) ?>" target="_blank" style="border: 1px solid var(--border-color); padding: 5px; border-radius: 8px; transition: transform 0.2s;">
+                    <img src="../public/Uploads/<?= htmlspecialchars($pj['cheminFichier']) ?>" alt="PJ" style="width: 90%; height: auto; object-fit: cover; border-radius: 4px;">
                 </a>
             <?php endforeach; ?>
         </div>
@@ -75,7 +76,7 @@ $_SESSION['libelleStatus'] = $signalement['libelleStatus'];
     
 </div>
 <div>
-    <a href="index.php" class="back-link">
+    <a href="Views/Home/index.php" class="back-link">
         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
