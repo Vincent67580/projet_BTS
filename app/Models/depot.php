@@ -1,9 +1,9 @@
 <!-- public/depot.php -->
 <?php
-include __DIR__ . '/../views/layout/header.php';
-require_once __DIR__ . '/../src/db.php';
-require_once __DIR__ . '/../src/formatageNom.php';
-require_once __DIR__ . '/../src/verifMDP.php';
+include __DIR__ . '/../Views/layout/header.php';
+require_once __DIR__ . '/../app/Config/db.php';
+require_once __DIR__ . '/../app/Models/formatageNom.php';
+require_once __DIR__ . '/../app/Models/verifMDP.php';
 
 $pdo = get_pdo();
 
@@ -35,8 +35,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     if ($erreurMdp !== null) {
-        include __DIR__ . '/../views/depot_alerte.php';
-        include __DIR__ . '/../views/layout/footer.php';
+        include __DIR__ . '/../Views/depot_alerte.php';
+        include __DIR__ . '/../Views/layout/footer.php';
         exit;
     }
 
@@ -154,12 +154,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <?php
 } else {
-    include __DIR__ . '/../views/depot_alerte.php';
+    include __DIR__ . '/../Views/depot_alerte.php';
 }
 ?>
 
 
-<?php include __DIR__.'/../views/layout/footer.php'; ?>
+<?php include __DIR__.'/../Views/layout/footer.php'; ?>
 
 <script>
 // Validation des fichiers (taille et format)

@@ -70,7 +70,7 @@
 <div class="card" style="max-width: 600px; margin: 0 auto;">
     <h2 class="text-center">Nouveau signalement</h2>
     
-    <form id="formAlerte" action="../public/depot.php" method="post" enctype="multipart/form-data">
+    <form id="formAlerte" action="../Models/depot.php" method="post" enctype="multipart/form-data">
         <!-- Type de signalement -->
         <div class="form-group">
             <label for="idTypeSignalement">Nature de l'alerte</label>
@@ -151,7 +151,7 @@
 </div>
 
 <div>
-    <a href="index.php" class="back-link">
+    <a href="/Home/index.php" class="back-link">
         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>

@@ -1,8 +1,9 @@
 <?php 
+// Controller pour la page d'accueil
 
     class HomeController {
     public function index() {
 
-        require '../Views/Home/index.php';
+        return '../Views/Home/index.php';
     }
 }

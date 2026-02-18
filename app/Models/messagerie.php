@@ -1,4 +1,4 @@
-<!-- public/messagerie.php -->
+<!-- app/Models/messagerie.php -->
 
 <?php
 session_start();
@@ -9,25 +9,25 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 
     session_unset();
     session_destroy();
 
-    include __DIR__.'/../views/layout/header.php';
+    include __DIR__.'/../Views/layout/header.php';
     echo 'Session expirée.<br><br><a href="consulter.php" class="btn">Se reconnecter</a>';
-    include __DIR__.'/../views/layout/footer.php';
+    include __DIR__.'/../Views/layout/footer.php';
     exit;
 }
 
 /* 2️ Accès interdit si non connecté */
 if (!isset($_SESSION['idSignalement'])) {
-    include __DIR__.'/../views/layout/header.php';
+    include __DIR__.'/../Views/layout/header.php';
     echo 'Accès non autorisé.<br><br><a href="consulter.php">Retour</a>';
-    include __DIR__.'/../views/layout/footer.php';
+    include __DIR__.'/../Views/layout/footer.php';
     exit;
 }
 
 /* 3️ Mise à jour de l’activité */
 $_SESSION['last_activity'] = time();
 
-require_once __DIR__ . '/../src/db.php';
-include __DIR__ . '/../views/layout/header.php';
+require_once __DIR__ . '/../Config/db.php';
+include __DIR__ . '/../Views/layout/header.php';
 
 $pdo = get_pdo();
 $idSignalement = $_SESSION['idSignalement'];
@@ -60,9 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if($_SESSION['libelleStatus']==='Traiter'):
-    include __DIR__ . '/../views/consulter_messagerie.php';
+    include __DIR__ . '/../Views/Consultations/consulter_messagerie.php';
 else:
-    include __DIR__ . '/../views/consulter_depot_messagerie.php';
+    include __DIR__ . '/../Views/Consultations/consulter_depot_messagerie.php';
 endif;
 
-include __DIR__ . '/../views/layout/footer.php';
+include __DIR__ . '/../Views/layout/footer.php';

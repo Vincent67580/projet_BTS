@@ -1,4 +1,4 @@
-<!-- views/consulter_depot_messagerie.php -->
+<!-- Views/Consultations/consulter_depot_messagerie.php -->
 
 <style>
     .messages{
@@ -97,7 +97,7 @@ form button:hover {
 
 <h2>Messagerie du signalement</h2>
 
-<a href="consulter.php" class="back-link">← Retour au signalement</a>
+<a href="Models/consulter.php" class="back-link">← Retour au signalement</a>
 <br>
 
 <div class="messages">

@@ -150,7 +150,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="../public/consulter.php" method="post">
+        <form action="../Models/consulter.php" method="post">
             <div class="form-group">
                 <label for="numeroDossier">Numéro de dossier</label>
                 <input type="text" 

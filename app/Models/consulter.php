@@ -7,9 +7,9 @@ $timeout = 300; // 5 minutes
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $timeout)) {
     session_unset();
     session_destroy();
-    include __DIR__.'/../views/layout/header.php';
+    include __DIR__.'/../Views/layout/header.php';
     echo 'Session expirée. <br><br> <a href="consulter.php" class="btn">Se reconnecter</a>';
-    include __DIR__.'/../views/layout/footer.php';
+    include __DIR__.'/../Views/layout/footer.php';
     exit;
 }
 
@@ -18,8 +18,8 @@ if (isset($_SESSION['idSignalement'])) {
     $_SESSION['last_activity'] = time();
 }
 
-require_once __DIR__ . '/../src/db.php';
-include __DIR__ . '/../views/layout/header.php';
+require_once __DIR__ . '/../Config/db.php';
+include __DIR__ . '/../Views/layout/header.php';
 
 $pdo = get_pdo();
 $erreur = null;
@@ -40,8 +40,8 @@ if (isset($_SESSION['idSignalement'])) {
     $signalement = $stmt->fetch();
 
     if ($signalement) {
-        include __DIR__ . '/../views/consulter_affichage.php';
-        include __DIR__.'/../views/layout/footer.php';
+        include __DIR__ . '/../Views/Consultations/consulter_affichage.php';
+        include __DIR__.'/../Views/layout/footer.php';
         exit;
     }
 }
@@ -68,15 +68,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_SESSION['idSignalement'] = $signalement['idSignalement'];
         $_SESSION['last_activity'] = time(); 
 
-        include __DIR__ . '/../views/consulter_affichage.php';
+        include __DIR__ . '/../Views/Consultations/consulter_affichage.php';
     } else {
         $erreur = "Numéro de dossier ou mot de passe incorrect.";
-        include __DIR__ . '/../views/consulter_form.php';
+        include __DIR__ . '/../Views/Consultations/consulter_form.php';
     }
 
 
 } else {
-    include __DIR__ . '/../views/consulter_form.php';
+    include __DIR__ . '/../Views/Consultations/consulter_form.php';
 }
 
-include __DIR__.'/../views/layout/footer.php';
+include __DIR__.'/../Views/layout/footer.php';

@@ -1,4 +1,4 @@
-<!-- views/consulter_messagerie.php -->
+<!-- /Views/Consultations/consulter_messagerie.php -->
 <!-- uniquement consultation des messages transmis (page visible si le signalment est clos) -->
 
 <style>
@@ -41,7 +41,7 @@
 
 <h2>Messagerie du signalement</h2>
 
-<a href="consulter.php" class="back-link">← Retour au signalement</a>
+<a href="Models/consulter.php" class="back-link">← Retour au signalement</a>
 <br>
 
 <div class="messages">

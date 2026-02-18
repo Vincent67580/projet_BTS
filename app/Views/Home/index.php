@@ -1,4 +1,4 @@
-<!-- public/index.php -->
+<!-- View/Home/index.php -->
 <?php include __DIR__.'/../Views/layout/header.php'; ?>
 
 <style>
@@ -59,7 +59,7 @@
                 Signalez un incident ou un comportement suspect. Vous pouvez choisir de rester anonyme.
             </p>
         </div>
-        <a class="btn" href="depot.php">Commencer le dépôt</a>
+        <a class="btn" href="Models/depot.php">Commencer le dépôt</a>
     </div>
 
     <!-- Carte Suivre -->
@@ -71,7 +71,7 @@
                 Consultez l'état d'avancement de votre signalement à l'aide de vos identifiants.
             </p>
         </div>
-        <a class="btn btn-secondary" href="consulter.php">Accéder au suivi</a>
+        <a class="btn btn-secondary" href="Models/consulter.php">Accéder au suivi</a>
     </div>
 </div>
 

@@ -43,11 +43,11 @@
 <body>
     <header>
         <div class="header-div">
-            <a class="logo-entreprise" href="index.php" >
+            <a class="logo-entreprise" href="Home/index.php" >
                 HRCompliance
             </a>
             <nav>
-                <a class="nav-lien " href="index.php">Accueil</a>
+                <a class="nav-lien " href="Home/index.php">Accueil</a>
             </nav>
         </div>
     </header>

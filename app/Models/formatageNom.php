@@ -1,4 +1,4 @@
-<!--src/formatageNom.php  -->
+<!--app/Models/formatageNom.php  -->
 <!-- permet de formater le nom et prenom meme si javascript est désactivé sur la page -->
 <?php
 

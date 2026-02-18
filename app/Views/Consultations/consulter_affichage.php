@@ -1,4 +1,4 @@
-<!-- views/consulter_affichage.php -->
+<!-- Views/Consultations/consulter_affichage.php -->
 <?php
 // Récupération des PJ
 $stmtPJ = $pdo->prepare("
@@ -86,10 +86,10 @@ $_SESSION['libelleStatus'] = $signalement['libelleStatus'];
 
 <!-- accès a la messagerie seulement si le signalement n'est pas clos -->
 <?php if($signalement['libelleStatus']==='Traiter'): ?>    
-    <a href="messagerie.php" class="btn">Voir les messages</a>       
-    <a href="deconnexion.php" class="btn" style="background-color:red">Quitter la consultation</a>
+    <a href="Models/messagerie.php" class="btn">Voir les messages</a>       
+    <a href="Services/deconnexion.php" class="btn" style="background-color:red">Quitter la consultation</a>
 <?php else: ?>
-    <a href="messagerie.php" class="btn">Accéder à la messagerie</a>       
-    <a href="deconnexion.php" class="btn" style="background-color:red">Quitter la consultation</a>
+    <a href="Models/messagerie.php" class="btn">Accéder à la messagerie</a>       
+    <a href="Services/deconnexion.php" class="btn" style="background-color:red">Quitter la consultation</a>
 <?php endif; ?>
 
