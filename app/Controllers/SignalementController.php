@@ -1,7 +1,7 @@
 <?php 
 // Controller pour la page de consultation de signalement
 
-require_once __DIR__.'/../Models/consulter.php';
+//require_once __DIR__.'/../Models/consulter.php';
 require_once __DIR__.'/../Helpers/sessionsHelper.php';
 
 class SignalementController {
