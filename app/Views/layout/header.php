@@ -1,11 +1,13 @@
 <!-- views/layout/header.php -->
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>HRCompliance - Signalement Interne</title>
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="/projet_BTS/public/assets/css/main.css">
     <!-- ajout d'une police plus moderne -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -43,11 +45,11 @@
 <body>
     <header>
         <div class="header-div">
-            <a class="logo-entreprise" href="Home/index.php" >
+            <a class="logo-entreprise" href="<?= BASE_URL ?>index.php?page=home" >
                 HRCompliance
             </a>
             <nav>
-                <a class="nav-lien " href="Home/index.php">Accueil</a>
+                <a class="nav-lien " href="<?= BASE_URL ?>index.php?page=home">Accueil</a>
             </nav>
         </div>
     </header>

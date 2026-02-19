@@ -79,4 +79,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     include __DIR__ . '/../Views/Depot/connexions.php';
 }
 
-include __DIR__.'/../Views/layout/footer.php'

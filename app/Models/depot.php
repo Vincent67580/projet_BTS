@@ -35,8 +35,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     if ($erreurMdp !== null) {
-        include __DIR__ . '/../Views/depot_alerte.php';
-        include __DIR__ . '/../Views/layout/footer.php';
+        include __DIR__ . '/../app/Views/insert.php';
+        include __DIR__ . '/../app/Views/layout/footer.php';
         exit;
     }
 
@@ -147,14 +147,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <div class="card-success">
     <p class="ajout">Alerte enregistrée avec succès !</p>
     <p>Votre numéro de dossier : <strong><?= htmlspecialchars($numeroDossier) ?></strong></p>
-    <a class="btn" href="Home/index.php">Retour à l'accueil</a>
+    <a class="btn" href="index.php?page=home">Retour à l'accueil</a>
     <a class="btn" href="consulter.php">Suivre votre signalement</a>
 </div>
 <?php endif; ?>
 
 <?php
 } else {
-    include __DIR__ . '/../Views/Depot/insert.php';
+    include __DIR__ . '/../app/Views/Depot/insert.php';
 }
 ?>
 
