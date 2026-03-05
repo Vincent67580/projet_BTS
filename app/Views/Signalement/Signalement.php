@@ -3,7 +3,6 @@
 <?php
 
 /*
-* 
 * Affichage du signalement après connexion
 */
 // Récupération des PJ

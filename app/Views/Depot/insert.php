@@ -70,7 +70,7 @@
 <div class="card" style="max-width: 600px; margin: 0 auto;">
     <h2 class="text-center">Nouveau signalement</h2>
     
-    <form id="formAlerte" action="../Models/depot.php" method="post" enctype="multipart/form-data">
+    <form id="formDepot" action="<?= BASE_URL ?>?page=depotInsert" method="post" enctype="multipart/form-data">
         <!-- Type de signalement -->
         <div class="form-group">
             <label for="idTypeSignalement">Nature de l'alerte</label>
