@@ -1,0 +1,12 @@
+//MO000-001.TXT ANA00000 TO ANA00001
+ajoutercommentaire		NFI		nouvelle table
+ajouterpj		NFI		nouvelle table
+historique		NFI		nouvelle table
+messagerie		NFI		nouvelle table
+piecejointe		NFI		nouvelle table
+roles		NFI		nouvelle table
+signalements		NFI		nouvelle table
+status		NFI		nouvelle table
+typesignalement		NFI		nouvelle table
+utilisateurs		NFI		nouvelle table
+MaConnexion1		CNX+		
