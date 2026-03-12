@@ -1,6 +1,8 @@
 <!-- src/verifMDP.php -->
 
 <?php
+
+class verifMDP{
 // Vérifie la robustesse d'un mot de passe
 
 // Règles :
@@ -34,4 +36,6 @@ function verifierMotDePasse(string $mdp): array
     }
     // Sinon on retourne toutes les erreurs
     return ['valide' => false, 'messages' => $erreurs];
+}
+
 }

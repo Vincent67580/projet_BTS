@@ -11,6 +11,7 @@ class DepotModel
 
     public function insererSignalement(array $data): int
     {
+    
         $sql = "
             INSERT INTO Signalements
             (contenu, estAnonyme, nom, prenom, numeroDossier, motDePasse, idStatus, idTypeSignalement)
@@ -60,4 +61,5 @@ class DepotModel
             ':pj' => $idPJ
         ]);
     }
+
 }

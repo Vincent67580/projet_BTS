@@ -1,6 +1,10 @@
 <?php
-// Controller pour la page de dépôt de signalement
+
+require_once __DIR__.'/../Config/db.php';
 require_once __DIR__.'/../Models/DepotModel.php';
+require_once __DIR__.'/../Models/verifMDP.php';
+
+// Controller pour la page de dépôt de signalement
 
 class DepotController {
     public function index() {
@@ -22,8 +26,12 @@ class DepotController {
 
         $estAnonyme = isset($_POST['estAnonyme']);
         $mdp = $_POST['mdp'];
+        
+        $mdpModel= new verifMDP();
 
-        $checkMdp = verifierMotDePasse($mdp);
+
+
+        $checkMdp =  $mdpModel->verifierMotDePasse($mdp);
         if (!$checkMdp['valide']) {
             $erreurMdp = $checkMdp['messages'];
             $formData = $_POST;
@@ -65,6 +73,19 @@ class DepotController {
             }
         }
 
-        return $this->index();
+        header("Location: ".BASE_URL."index.php?page=confirmation&numero=".$numeroDossier);
+        exit();
+
     }
+
+        public function confirmationDepot(){
+
+        $numero = $_GET['numero'];
+
+        require BASE_PATH . '/app/Views/layout/header.php';
+        require BASE_PATH . '/app/Views/Depot/confirmations.php';
+        require BASE_PATH . '/app/Views/layout/footer.php';
+    }
+
+   
 }
