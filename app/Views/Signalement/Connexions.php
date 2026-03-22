@@ -150,7 +150,7 @@
             </div>
         <?php endif; ?>
 
-        <form  method="post" action="<?= BASE_URL ?>index.php?page=signalement">
+        <form  method="post" action="<?= BASE_URL ?>index.php?page=signalementConnexions">
             <div class="form-group">
                 <label for="numeroDossier">Numéro de dossier</label>
                 <input type="text" 

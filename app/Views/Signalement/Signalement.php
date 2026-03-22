@@ -5,15 +5,7 @@
 /*
 * Affichage du signalement après connexion
 */
-// Récupération des PJ
-$stmtPJ = $pdo->prepare("
-    SELECT pj.nomFichier, pj.cheminFichier
-    FROM PieceJointe pj
-    JOIN AjouterPJ ap ON ap.idPJ = pj.idPJ
-    WHERE ap.idSignalement = ?
-");
-$stmtPJ->execute([$signalement['idSignalement'] ?? 0]); 
-$piecesJointes = $stmtPJ->fetchAll();
+
 
 // Couleur selon le statut a modifier
 $statusColors = [
@@ -21,6 +13,7 @@ $statusColors = [
     'En cours' => '#10b981', // vert
     'Traiter'  => '#ef4444', // rouge
 ];
+
 
 $statusColor = $statusColors[$signalement['libelleStatus']] ?? '#6b7280'; // gris par défaut
 
@@ -75,7 +68,7 @@ $_SESSION['libelleStatus'] = $signalement['libelleStatus'];
     
 </div>
 <div>
-    <a href="Views/Home/index.php" class="back-link">
+    <a href="<?= BASE_URL ?>index.php?page=home" class="back-link">
         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
@@ -87,9 +80,9 @@ $_SESSION['libelleStatus'] = $signalement['libelleStatus'];
 <!-- accès a la messagerie seulement si le signalement n'est pas clos -->
 <?php if($signalement['libelleStatus']==='Traiter'): ?>    
     <a href="Models/messagerie.php" class="btn">Voir les messages</a>       
-    <a href="Services/deconnexion.php" class="btn" style="background-color:red">Quitter la consultation</a>
+    <a href="<?= BASE_URL ?>index.php?page=signalementConnexions" class="btn" style="background-color:red">Quitter la consultation</a>
 <?php else: ?>
     <a href="Models/messagerie.php" class="btn">Accéder à la messagerie</a>       
-    <a href="Services/deconnexion.php" class="btn" style="background-color:red">Quitter la consultation</a>
+    <a href="<?= BASE_URL ?>index.php?page=signalementConnexions" class="btn" style="background-color:red">Quitter la consultation</a>
 <?php endif; ?>
 

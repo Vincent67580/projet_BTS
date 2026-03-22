@@ -9,21 +9,15 @@ class SignalementModel
         $this->pdo = $pdo;
     }
 
-    public function findById(int $id): ?array
-    {
-        $stmt = $this->pdo->prepare('
-            SELECT si.idSignalement, si.numeroDossier, ty.libelle AS libelleType,
-                   si.contenu, st.libelle AS libelleStatus, si.dateDepot,
-                   si.estAnonyme, si.nom, si.prenom
-            FROM Signalements si
-            JOIN Status st ON st.idStatus = si.idStatus
-            JOIN TypeSignalement ty ON ty.idTypeSignalement = si.idTypeSignalement
-            WHERE si.idSignalement = ?
-        ');
-        $stmt->execute([$id]);
+    //Connexions au signalement
+    public function findDossier(string $numeroDossier){
+    $stmt = $this->pdo->prepare('SELECT * FROM Signalements WHERE numeroDossier = :numeroDossier');
+    $stmt->execute([
+        'numeroDossier' => $numeroDossier
+    ]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-        return $stmt->fetch() ?: null;
-    }
 
     public function findByNumeroDossier(string $numero): ?array
     {
@@ -40,4 +34,16 @@ class SignalementModel
 
         return $stmt->fetch() ?: null;
     }
+
+   public function findPiecesJointes(int $idSignalement): array
+{
+    $stmt = $this->pdo->prepare('
+        SELECT pj.nomFichier, pj.cheminFichier
+        FROM PieceJointe pj
+        JOIN AjouterPJ ap ON ap.idPJ = pj.idPJ
+        WHERE ap.idSignalement = ?
+    ');
+    $stmt->execute([$idSignalement]);
+    return $stmt->fetchAll();
+}
 }

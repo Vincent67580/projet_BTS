@@ -59,9 +59,9 @@ class DepotController {
                 if (!in_array($ext, ['jpg','jpeg','png','gif','webp'])) continue;
 
                 $nomFichier = bin2hex(random_bytes(16)) . '.' . $ext;
-                $chemin = 'uploads/' . $nomFichier;
+                $chemin =$nomFichier;
 
-                move_uploaded_file($_FILES['pj']['tmp_name'][$i], __DIR__ . '/../../public/' . $chemin);
+                move_uploaded_file($_FILES['pj']['tmp_name'][$i], __DIR__ . '/../../storage/uploads/' . $chemin);
 
                 $idPJ = $model->ajouterPieceJointe([
                     'nom' => $nomFichier,
@@ -72,6 +72,8 @@ class DepotController {
                 $model->lierPieceJointe($idSignalement, $idPJ);
             }
         }
+
+        $_SESSION['numeroDossier_nouveau'] = $numeroDossier;
 
         header("Location: ".BASE_URL."index.php?page=confirmation&numero=".$numeroDossier);
         exit();

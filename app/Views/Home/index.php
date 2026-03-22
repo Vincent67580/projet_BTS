@@ -71,7 +71,7 @@
                 Consultez l'état d'avancement de votre signalement à l'aide de vos identifiants.
             </p>
         </div>
-        <a class="btn btn-secondary" href="<?= BASE_URL ?>index.php?page=signalement">Accéder au suivi</a>
+        <a class="btn btn-secondary" href="<?= BASE_URL ?>index.php?page=signalementConnexions">Accéder au suivi</a>
     </div>
 </div>
 <br>

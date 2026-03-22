@@ -10,4 +10,5 @@
 
 <p>Conservez ce numéro pour suivre votre dossier.</p>
         <a class="btn" href="<?= BASE_URL ?>index.php?page=depot">Refaire un dépôt</a>
+        <a href="<?= BASE_URL ?>index.php?page=signalementConnexions" class="btn"> Consulter mon dossier</a>
     </div>
