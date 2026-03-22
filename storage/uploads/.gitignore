@@ -1,0 +1,4 @@
+# storage/uploads/.gitignore
+*
+!.gitignore
+!.gitkeep
