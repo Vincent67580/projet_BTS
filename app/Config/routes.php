@@ -12,5 +12,6 @@ return [
     //route pour la page de consultation de signalement
     'signalement'           => 'SignalementController@index',
     'signalementConnexions' => 'SignalementController@connexions',
+    'fichier'               => 'SignalementController@servirFichier',
 ];
 

@@ -54,16 +54,33 @@ $_SESSION['libelleStatus'] = $signalement['libelleStatus'];
         <p style="margin: 0; white-space: pre-wrap;"><?= nl2br(htmlspecialchars($signalement['contenu'])) ?></p>
     </div>
 
-    <?php if (!empty($piecesJointes)): ?>
-        <h4 style="color: var(--text-muted); margin-bottom: 1rem;">Pièces jointes</h4>
-        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <?php foreach ($piecesJointes as $pj): ?>
-                <a href="../Models/Uploads/<?= htmlspecialchars($pj['cheminFichier']) ?>" target="_blank" style="border: 1px solid var(--border-color); padding: 5px; border-radius: 8px; transition: transform 0.2s;">
-                    <img src="../public/Uploads/<?= htmlspecialchars($pj['cheminFichier']) ?>" alt="PJ" style="width: 90%; height: auto; object-fit: cover; border-radius: 4px;">
-                </a>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
+<?php if (!empty($piecesJointes)): ?>
+    <h4 style="color: var(--text-muted); margin-bottom: 1rem;">Pièces jointes</h4>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <?php foreach ($piecesJointes as $pj): ?>
+          <img 
+    src="<?= BASE_URL ?>index.php?page=fichier&fichier=<?= urlencode($pj['nomFichier']) ?>"
+    style="width: 90px; height: 90px; object-fit: cover; border-radius: 8px; cursor: pointer;"
+    onclick="ouvrirImage(this.src)"
+>
+        <?php endforeach; ?>
+    </div>
+
+    <!-- Modale -->
+    <div id="modale-image" onclick="fermerImage()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
+        <img id="modale-img" src="" style="max-width:90%; max-height:90%; border-radius:8px;">
+    </div>
+
+    <script>
+        function ouvrirImage(src) {
+            document.getElementById('modale-img').src = src;
+            document.getElementById('modale-image').style.display = 'flex';
+        }
+        function fermerImage() {
+            document.getElementById('modale-image').style.display = 'none';
+        }
+    </script>
+<?php endif; ?>
 
     
 </div>
