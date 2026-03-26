@@ -98,7 +98,7 @@ form button:hover {
 
 <h2>Messagerie du signalement</h2>
 
-<a href="Models/consulter.php" class="back-link">← Retour au signalement</a>
+<a href="<?= BASE_URL ?>index.php?page=consultation" class="back-link">← Retour au signalement</a>
 <br>
 
 <div class="messages">

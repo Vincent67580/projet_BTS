@@ -150,6 +150,10 @@
             </div>
         <?php endif; ?>
 
+        <?php if (isset($_GET['expire'])): ?>
+            <p style="color: red;">Votre session a expiré après 15 minutes d'inactivité. Veuillez vous reconnecter.</p>
+        <?php endif; ?>
+
         <form  method="post" action="<?= BASE_URL ?>index.php?page=signalementConnexions">
             <div class="form-group">
                 <label for="numeroDossier">Numéro de dossier</label>

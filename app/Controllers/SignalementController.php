@@ -2,6 +2,7 @@
 require_once __DIR__.'/../Models/SignalementModel.php';
 require_once __DIR__.'/../Helpers/sessionsHelper.php';
 require_once __DIR__.'/../Config/db.php';   
+require_once __DIR__ . '/../Helpers/sessionsHelper.php';
 
 class SignalementController {
 
@@ -24,6 +25,8 @@ class SignalementController {
             $piecesJointes = $model->findPiecesJointes($signalement['idSignalement']);
             $_SESSION['signalement_id'] = $signalement['idSignalement'];
             $_SESSION['libelleStatus']   = $signalement['libelleStatus'];
+            $_SESSION['numeroDossier']   = $numeroDossier; 
+            $_SESSION['last_activity']   = time();
 
             require BASE_PATH . '/app/Views/layout/header.php';
             require BASE_PATH . '/app/Views/Signalement/Signalement.php';
@@ -50,6 +53,7 @@ class SignalementController {
         $piecesJointes = $model->findPiecesJointes($signalement['idSignalement']);
         $_SESSION['signalement_id'] = $signalement['idSignalement'];
         $_SESSION['libelleStatus']  = $signalement['libelleStatus'];
+        $_SESSION['numeroDossier']   = $numeroDossier;
         $_SESSION['fichier_token']  = bin2hex(random_bytes(16));
         session_write_close();
 
@@ -77,5 +81,19 @@ class SignalementController {
     flush();
     readfile($chemin);
     exit;
+}
+
+public function consultation() {
+    checkSession();
+
+    $pdo = get_pdo();
+    $model = new SignalementModel($pdo);
+
+    $signalement   = $model->findByNumeroDossier($_SESSION['numeroDossier']);
+    $piecesJointes = $model->findPiecesJointes($signalement['idSignalement']);
+
+    require BASE_PATH . '/app/Views/layout/header.php';
+    require BASE_PATH . '/app/Views/Signalement/Signalement.php';
+    require BASE_PATH . '/app/Views/layout/footer.php';
 }
 }

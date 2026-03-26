@@ -13,6 +13,7 @@ return [
     'signalement'           => 'SignalementController@index',
     'signalementConnexions' => 'SignalementController@connexions',
     'fichier'               => 'SignalementController@servirFichier',
+    'consultation'          => 'SignalementController@consultation',
     //route pour la page de messagerie
     'messagerie'           => 'MessagerieController@index',
 ];

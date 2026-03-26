@@ -2,10 +2,13 @@
 
 require_once __DIR__ . '/../Models/MessagerieModel.php';
 require_once __DIR__ . '/../Config/db.php';
+require_once __DIR__ . '/../Helpers/sessionsHelper.php';
 
 class MessagerieController {
 
     public function index() {
+    checkSession();
+
         $pdo = get_pdo();
         $model = new MessagerieModel($pdo);
 
