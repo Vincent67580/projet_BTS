@@ -96,10 +96,10 @@ $_SESSION['libelleStatus'] = $signalement['libelleStatus'];
 
 <!-- accès a la messagerie seulement si le signalement n'est pas clos -->
 <?php if($signalement['libelleStatus']==='Traiter'): ?>    
-    <a href="Models/messagerie.php" class="btn">Voir les messages</a>       
+    <a href="<?= BASE_URL ?>index.php?page=messagerie" class="btn">Voir les messages</a>       
     <a href="<?= BASE_URL ?>index.php?page=signalementConnexions" class="btn" style="background-color:red">Quitter la consultation</a>
 <?php else: ?>
-    <a href="Models/messagerie.php" class="btn">Accéder à la messagerie</a>       
+    <a href="<?= BASE_URL ?>index.php?page=messagerie" class="btn">Accéder à la messagerie</a>       
     <a href="<?= BASE_URL ?>index.php?page=signalementConnexions" class="btn" style="background-color:red">Quitter la consultation</a>
 <?php endif; ?>
 

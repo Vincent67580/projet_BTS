@@ -23,6 +23,7 @@ class SignalementController {
             $signalement   = $model->findByNumeroDossier($numeroDossier);
             $piecesJointes = $model->findPiecesJointes($signalement['idSignalement']);
             $_SESSION['signalement_id'] = $signalement['idSignalement'];
+            $_SESSION['libelleStatus']   = $signalement['libelleStatus'];
 
             require BASE_PATH . '/app/Views/layout/header.php';
             require BASE_PATH . '/app/Views/Signalement/Signalement.php';
@@ -48,6 +49,7 @@ class SignalementController {
         $signalement   = $model->findByNumeroDossier($numeroDossier);
         $piecesJointes = $model->findPiecesJointes($signalement['idSignalement']);
         $_SESSION['signalement_id'] = $signalement['idSignalement'];
+        $_SESSION['libelleStatus']  = $signalement['libelleStatus'];
         $_SESSION['fichier_token']  = bin2hex(random_bytes(16));
         session_write_close();
 

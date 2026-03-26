@@ -2,18 +2,6 @@
 
 session_start();
 
-
-if (($_GET['page'] ?? '') === 'fichier') {
-    define('BASE_PATH', dirname(__DIR__));
-    define('BASE_URL', '/projet_BTS/public/');
-    require_once BASE_PATH . '/app/Config/db.php';
-    require_once BASE_PATH . '/app/Helpers/sessionsHelper.php';
-    require_once BASE_PATH . '/app/Models/SignalementModel.php';
-    require_once BASE_PATH . '/app/Controllers/SignalementController.php';
-    $controller = new SignalementController();
-    $controller->servirFichier();
-    exit;
-}
 // 1. Constantes globales
 define('BASE_PATH', dirname(__DIR__)); 
 define('BASE_URL', '/projet_BTS/public/');
