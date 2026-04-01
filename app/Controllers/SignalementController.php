@@ -3,6 +3,7 @@ require_once __DIR__.'/../Models/SignalementModel.php';
 require_once __DIR__.'/../Helpers/sessionsHelper.php';
 require_once __DIR__.'/../Config/db.php';   
 require_once __DIR__ . '/../Helpers/sessionsHelper.php';
+require_once __DIR__ . '/../Helpers/logHelper.php';
 
 class SignalementController {
 
@@ -46,6 +47,7 @@ class SignalementController {
         
         if (!$signalement || !password_verify($mdp, $signalement['motDePasse'])) {
             $erreur = "Numéro de dossier ou mot de passe incorrect.";
+            writeLog('CONNEXION_ECHOUEE', ['numeroDossier' => $numeroDossier]);
             return $this->index();
         }
 
@@ -56,6 +58,8 @@ class SignalementController {
         $_SESSION['numeroDossier']   = $numeroDossier;
         $_SESSION['fichier_token']  = bin2hex(random_bytes(16));
         session_write_close();
+
+        writeLog('CONNEXION_REUSSIE', ['numeroDossier' => $numeroDossier]);
 
         require BASE_PATH . '/app/Views/layout/header.php';
         require BASE_PATH . '/app/Views/Signalement/Signalement.php';

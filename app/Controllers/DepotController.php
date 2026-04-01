@@ -3,6 +3,7 @@
 require_once __DIR__.'/../Config/db.php';
 require_once __DIR__.'/../Models/DepotModel.php';
 require_once __DIR__.'/../Models/verifMDP.php';
+require_once __DIR__ . '/../Helpers/logHelper.php';
 
 // Controller pour la page de dépôt de signalement
 
@@ -29,8 +30,6 @@ class DepotController {
         
         $mdpModel= new verifMDP();
 
-
-
         $checkMdp =  $mdpModel->verifierMotDePasse($mdp);
         if (!$checkMdp['valide']) {
             $erreurMdp = $checkMdp['messages'];
@@ -49,6 +48,8 @@ class DepotController {
             'motDePasse' => password_hash($mdp, PASSWORD_DEFAULT),
             'type' => $_POST['idTypeSignalement']
         ]);
+
+        
 
         // Upload PJ
         if (!empty($_FILES['pj']['name'][0])) {
@@ -74,6 +75,7 @@ class DepotController {
         }
 
         $_SESSION['numeroDossier_nouveau'] = $numeroDossier;
+        writeLog('DEPOT_SIGNALEMENT', ['numeroDossier' => $numeroDossier]);
 
         header("Location: ".BASE_URL."index.php?page=confirmation&numero=".$numeroDossier);
         exit();
