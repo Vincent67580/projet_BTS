@@ -193,3 +193,45 @@
         });
     });
 </script>
+
+//Vérification du mot de passe en JS avant envoi du formulaire
+<script>
+const form = document.getElementById('formDepot');
+const mdp = document.getElementById('mdp');
+const errorMdp = document.getElementById('errorMdp');
+
+form.addEventListener('submit', function(e) {
+
+    const value = mdp.value;
+
+    let erreurs = [];
+
+    // Vérifications
+    if (value.length < 12) {
+        erreurs.push("Au moins 12 caractères");
+    }
+
+    if (!/[A-Z]/.test(value)) {
+        erreurs.push("Une majuscule");
+    }
+
+    if (!/[0-9]/.test(value)) {
+        erreurs.push("Un chiffre");
+    }
+
+    if (!/[!@#$%^&*(),.?\":{}|<>]/.test(value)) {
+        erreurs.push("Un caractère spécial");
+    }
+
+    // Si erreurs → bloquer envoi
+    if (erreurs.length > 0) {
+        e.preventDefault();
+
+        errorMdp.style.display = "block";
+        errorMdp.innerHTML = erreurs.map(err => `<li>${err}</li>`).join('');
+    } else {
+        errorMdp.style.display = "none";
+        errorMdp.innerHTML = "";
+    }
+});
+</script>

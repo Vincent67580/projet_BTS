@@ -38,7 +38,9 @@
         text-decoration: none; 
         font-size: 0.9rem;
     }
-
+        .nav-lien:hover{
+            color: var(--primary-color);
+        }   
 
 </style>
 

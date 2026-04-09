@@ -75,7 +75,7 @@ class DepotController {
         }
 
         $_SESSION['numeroDossier_nouveau'] = $numeroDossier;
-        writeLog('DEPOT_SIGNALEMENT', ['numeroDossier' => $numeroDossier]);
+       writeLog('DEPOT_SIGNALEMENT', ['numeroDossier' => $numeroDossier]);
 
         header("Location: ".BASE_URL."index.php?page=confirmation&numero=".$numeroDossier);
         exit();

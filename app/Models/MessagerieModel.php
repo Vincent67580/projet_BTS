@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../Helpers/chiffrementHelper.php';
+
 class MessagerieModel {
     private PDO $pdo;
 
@@ -15,14 +17,22 @@ class MessagerieModel {
             ORDER BY dateMessage ASC
         ");
         $stmt->execute([$idSignalement]);
-        return $stmt->fetchAll();
+
+         $messages = $stmt->fetchAll();
+
+        foreach ($messages as &$message) {
+        $message['contenu'] = cesar_dechiffrer($message['contenu']);
+        }
+
+        return $messages;
     }
 
     public function envoyerMessage(int $idSignalement, string $contenu): void {
+        $contenuChiffre = cesar_chiffrer($contenu);
         $stmt = $this->pdo->prepare("
             INSERT INTO Messagerie (idSignalement, origine, contenu)
             VALUES (?, 'SIGNALEUR', ?)
         ");
-        $stmt->execute([$idSignalement, $contenu]);
+        $stmt->execute([$idSignalement, $contenuChiffre]);
     }
 }

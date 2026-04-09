@@ -4,6 +4,7 @@ require_once __DIR__ . '/../Models/MessagerieModel.php';
 require_once __DIR__ . '/../Config/db.php';
 require_once __DIR__ . '/../Helpers/sessionsHelper.php';
 require_once __DIR__ . '/../Helpers/logHelper.php';
+require_once __DIR__ . '/../Helpers/chiffrementHelper.php';
 
 class MessagerieController {
 
@@ -23,7 +24,7 @@ class MessagerieController {
 
             if ($contenu !== '') {
                 $model->envoyerMessage($idSignalement, $contenu);
-                writeLog('MESSAGE_ENVOYE', ['idSignalement' => $idSignalement]);
+               writeLog('MESSAGE_ENVOYE', ['idSignalement' => $idSignalement]);
                 header("Location: " . BASE_URL . "index.php?page=messagerie");
                 exit;
             }
@@ -33,7 +34,7 @@ class MessagerieController {
 
         require BASE_PATH . '/app/Views/layout/header.php';
 
-        if ($libelleStatus === 'Traiter') {
+        if ($libelleStatus === 'Traité') {
             require BASE_PATH . '/app/Views/Messagerie/LogMessagerie.php';
         } else {
             require BASE_PATH . '/app/Views/Messagerie/messagerie.php';
