@@ -73,6 +73,17 @@
         </div>
         <a class="btn btn-secondary" href="<?= BASE_URL ?>index.php?page=signalementConnexions">Accéder au suivi</a>
     </div>
+    <!-- Carte Accès tout signalement -->
+     <div class="card text-center carte">
+        <div>
+            <div class="carte-icon">📝</div>
+            <h3>Accès à tous les signalements</h3>
+            <p class="carte-parag">
+                Consultez l'état d'avancement de vos signalements à l'aide de vos identifiants.
+            </p>
+        </div>
+        <a class="btn" href="<?= BASE_URL ?>index.php?page=AllSignalements">Accéder à mes signalements</a>
+    </div>
 </div>
 <br>
 <br>

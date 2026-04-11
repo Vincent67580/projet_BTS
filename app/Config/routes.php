@@ -16,5 +16,11 @@ return [
     'consultation'          => 'SignalementController@consultation',
     //route pour la page de messagerie
     'messagerie'           => 'MessagerieController@index',
+    //route compte
+    'login'                 => 'SignaleurController@login',
+    'inscription'           => 'SignaleurController@inscription',
+    'logout'                => 'SignaleurController@logout',
+    //route pour la page de tout les signalements d'un signaleur
+    'AllSignalements'       => 'AllSignalementsController@index',
 ];
 

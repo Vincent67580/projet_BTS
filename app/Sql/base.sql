@@ -35,9 +35,7 @@ CREATE TABLE Status(
 CREATE TABLE Signalements(
    idSignalement INT AUTO_INCREMENT,
    contenu TEXT,
-   estAnonyme BOOLEAN NOT NULL,
-   nom VARCHAR(50),
-   prenom VARCHAR(50),
+   idSignaleur INT NULL,
    numeroDossier VARCHAR(16) NOT NULL,
    dateDepot DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
    dateCloture DATETIME,
@@ -45,8 +43,19 @@ CREATE TABLE Signalements(
    idStatus INT NOT NULL,
    idTypeSignalement INT NOT NULL,
    PRIMARY KEY(idSignalement),
+   FoREIGN KEY(idSignaleur) REFERENCES signaleur(idSignaleur),
    FOREIGN KEY(idStatus) REFERENCES Status(idStatus),
    FOREIGN KEY(idTypeSignalement) REFERENCES TypeSignalement(idTypeSignalement)
+);
+
+CREATE TABLE signaleur (
+    idSignaleur INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(100) NOT NULL,
+    Prenom VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    telephone VARCHAR(20) NULL,
+    password VARCHAR(255) NOT NULL,
+    dateCreate DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE Utilisateurs(

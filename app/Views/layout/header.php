@@ -51,8 +51,17 @@
                 HRCompliance
             </a>
             <nav>
-                <a class="nav-lien " href="<?= BASE_URL ?>index.php?page=home">Accueil</a>
-            </nav>
+    <a class="nav-lien" href="<?= BASE_URL ?>index.php?page=home">Accueil</a>
+    <?php if (isset($_SESSION['user_id'])): ?>
+        <span style="color: var(--text-muted); font-size: 0.9rem;">
+            Bonjour <?= htmlspecialchars($_SESSION['user_prenom']) ?>
+        </span>
+        <a class="nav-lien" href="<?= BASE_URL ?>index.php?page=logout">Se déconnecter</a>
+    <?php else: ?>
+        <a class="nav-lien" href="<?= BASE_URL ?>index.php?page=login">Se connecter</a>
+        <a class="nav-lien" href="<?= BASE_URL ?>index.php?page=inscription">S'inscrire</a>
+    <?php endif; ?>
+</nav>
         </div>
     </header>
     <main>

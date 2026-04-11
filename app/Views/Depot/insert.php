@@ -194,7 +194,7 @@
     });
 </script>
 
-//Vérification du mot de passe en JS avant envoi du formulaire
+<!-- Validation du mot de passe -->
 <script>
 const form = document.getElementById('formDepot');
 const mdp = document.getElementById('mdp');
